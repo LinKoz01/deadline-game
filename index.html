@@ -156,426 +156,6 @@
         <button class="menu-btn" style="color:#ff3333;" onclick="openInvite()">[BLOOD PACT (ПРИГЛАСИТЬ)]</button>
     </div>
 
-    <div class="modal-overlay" id="deathModal" style="z-index: 9999; background-color: rgba(10, 0, 0, 0.98);">
-        <div class="modal-window">
-            <div class="modal-title">YOU ARE DEAD</div>
-            <div style="font-size: 10px; color: #ccc; margin-bottom: 20px; line-height: 1.6;">
-                TIME RAN OUT.<br>
-                YOUR STREAK OF <span id="deathStreakDisplay" style="color:#ff3333">0</span> DAYS IS GONE.
-            </div>
-            
-            <div id="defibOption" style="display: none; border: 1px solid #ff3333; padding: 15px; margin-bottom: 15px;">
-                <div style="font-size: 8px; color: #ff3333; margin-bottom: 10px;">YOU HAVE <span id="deathDefibCount">1</span> DEFIBRILLATOR(S).</div>
-                <button class="action-btn buy" onclick="useDefibrillator()" style="background-color: #8b0000; color: #fff; border-color: #ff3333;">USE DEFIBRILLATOR</button>
-            </div>
-
-            <div id="noDefibOption" style="display: none; border: 1px dashed #666; padding: 15px; margin-bottom: 15px;">
-                <div style="font-size: 8px; color: #666; margin-bottom: 10px;">NO DEFIBRILLATORS IN INVENTORY.</div>
-                <button class="action-btn buy" onclick="buyDefibrillator(true)">BUY NOW - $9.90</button>
-            </div>
-
-            <button class="action-btn equip" onclick="acceptDeath()" style="background-color: #000;">ACCEPT DEATH (ОБНУЛИТЬ СТРИК)</button>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="profileModal">
-        <div class="modal-window">
-            <div class="modal-title">DOSSIER (ДОСЬЕ)</div>
-            <div class="avatar-box" id="avatarPreview">?</div>
-            <input type="text" id="nicknameInput" class="retro-input" placeholder="ENTER NAME" maxlength="10">
-            <button class="action-btn buy" onclick="saveProfile()" style="margin-bottom: 20px;">SAVE DATA</button>
-            
-            <div style="border-top: 1px dashed #333; padding-top: 15px; margin-top: 10px;">
-                <div style="font-size: 6px; color: #555; margin-bottom: 10px;">DEV TOOLS (ONLY FOR CREATOR)</div>
-                <button class="action-btn" onclick="resetDay()" style="background-color: #333; color: #fff; border-color: #555; margin-bottom: 5px;">RESET DAY (TEST CLICKS)</button>
-                <button class="action-btn" onclick="triggerDeathScreen()" style="background-color: #330000; color: #ff3333; border-color: #ff3333;">KILL ME (TEST DEATH)</button>
-            </div>
-
-            <button class="close-modal" onclick="closeProfile()">[CLOSE]</button>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="marketModal">
-        <div class="modal-window">
-            <div class="modal-title">BLACK MARKET</div>
-
-            <div style="font-size: 8px; color: #888; margin: 0 0 15px 0;">SERVICES: SURVIVAL & CHEATS</div>
-            
-            <div class="market-item">
-                <div class="item-name" style="color: #ffd700;">PREMIUM: DAILY ALARM</div>
-                <div class="item-desc">BOT SENDS URGENT PUSH REMINDERS + VIP GOLD BADGE</div>
-                <button class="action-btn buy" onclick="alert('TG Payments Init...')">SUBSCRIBE - $3.90/MO</button>
-            </div>
-            
-            <div class="market-item">
-                <div class="item-name" style="color: #ff3333;">DEFIBRILLATOR (MAX 5)</div>
-                <div class="item-desc">FORGOT TO CLICK? REVIVE A LOST STREAK.</div>
-                <button class="action-btn buy" onclick="buyDefibrillator(false)">BUY CHEAT - $9.90</button>
-            </div>
-
-            <div style="font-size: 8px; color: #888; margin: 25px 0 15px 0;">CATEGORY: CLASSIC & DARK</div>
-            <div class="market-item"><div class="item-name">DARK ACADEMIA</div><button class="action-btn buy skin-btn" onclick="handleItemClick(this, 'academia')">BUY - $7.90</button></div>
-            <div class="market-item"><div class="item-name">MIDNIGHT LIBRARY</div><button class="action-btn buy skin-btn" onclick="handleItemClick(this, 'library')">BUY - $8.90</button></div>
-            <div class="market-item"><div class="item-name">OLD CRYPT</div><button class="action-btn buy skin-btn" onclick="handleItemClick(this, 'crypt')">BUY - $7.90</button></div>
-            <div class="market-item"><div class="item-name">ROYAL STABLE</div><button class="action-btn buy skin-btn" onclick="handleItemClick(this, 'stable')">BUY - $9.90</button></div>
-
-            <div style="font-size: 8px; color: #888; margin: 25px 0 15px 0;">CATEGORY: TECH & NEON</div>
-            <div class="market-item"><div class="item-name">DIGITAL ABYSS</div><button class="action-btn buy skin-btn" onclick="handleItemClick(this, 'abyss')">BUY - $6.90</button></div>
-            <div class="market-item"><div class="item-name">NEON STREET</div><button class="action-btn buy skin-btn" onclick="handleItemClick(this, 'neon')">BUY - $7.90</button></div>
-            <div class="market-item"><div class="item-name">GLITCH CORE</div><button class="action-btn buy skin-btn" onclick="handleItemClick(this, 'glitch')">BUY - $8.90</button></div>
-
-            <button class="close-modal" onclick="closeMarket()">[CLOSE]</button>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="friendsModal">
-        <div class="modal-window">
-            <div class="modal-title">FRIENDS</div>
-            <div style="font-size: 8px; color: #aaa; margin-bottom: 15px;">MONITOR THEIR PROGRESS.<br>LAUGH AT THEIR FAILURES.</div>
-            <div class="leaderboard-list">
-                <div class="lb-row theme-academia"><span class="lb-rank" style="color: #00ff00; font-size: 8px;">ALIVE</span><div class="lb-avatar">N</div><div class="lb-info"><span class="lb-name">NIGHT_OWL</span><span class="lb-streak">45 DAYS ALIVE</span></div></div>
-                <div class="lb-row theme-abyss"><span class="lb-rank" style="color: #00ff00; font-size: 8px;">ALIVE</span><div class="lb-avatar">E</div><div class="lb-info"><span class="lb-name">EASY_GO</span><span class="lb-streak">3 DAYS ALIVE</span></div></div>
-                <div class="lb-row dead-row"><span class="lb-rank" style="color: #ff3333; font-size: 8px;">DEAD</span><div class="lb-avatar">S</div><div class="lb-info"><span class="lb-name">SLACKER</span><span class="lb-streak">DIED AT 12 DAYS</span></div></div>
-            </div>
-            <button class="action-btn buy" onclick="closeFriends(); openInvite();" style="margin-bottom: 10px;">ADD MORE FRIENDS</button>
-            <button class="close-modal" onclick="closeFriends()">[CLOSE]</button>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="leaderboardModal">
-        <div class="modal-window">
-            <div class="modal-title">GLOBAL RANKING</div>
-            <div class="leaderboard-list">
-                <div class="lb-row theme-neon"><span class="lb-rank">#1</span><div class="lb-avatar">X</div><div class="lb-info"><span class="lb-name">PSYCHO</span><span class="lb-streak">124 DAYS ALIVE</span></div></div>
-                <div class="lb-row theme-stable"><span class="lb-rank">#2</span><div class="lb-avatar">V</div><div class="lb-info"><span class="lb-name">SLEEPLESS</span><span class="lb-streak">98 DAYS ALIVE</span></div></div>
-                <div style="color: #666; font-size: 10px; margin: 5px 0;">...</div>
-                <div class="lb-row my-row" id="myLeaderboardRow"><span class="lb-rank">#402</span><div class="lb-avatar" id="myLbAvatar">?</div><div class="lb-info"><span class="lb-name" id="myLbName">UNKNOWN</span><span class="lb-streak" id="myLbStreak">0 DAYS ALIVE</span></div></div>
-            </div>
-            <button class="close-modal" onclick="closeLeaderboard()">[CLOSE]</button>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="graveyardModal">
-        <div class="modal-window grave-style">
-            <div class="modal-title grave-title">GRAVEYARD</div>
-            <div style="font-size: 8px; color: #555; margin-bottom: 15px;">REST IN PIECES (ПОКОЙТЕСЬ НА КУСОЧКИ)</div>
-            <div class="leaderboard-list">
-                <div class="lb-row dead-row"><span class="dead-icon">☠️</span><div class="lb-avatar">L</div><div class="lb-info"><span class="lb-name">LOSER_99</span><span class="lb-streak">DIED AT 45 DAYS</span></div></div>
-                <div class="lb-row dead-row"><span class="dead-icon">☠️</span><div class="lb-avatar">A</div><div class="lb-info"><span class="lb-name">ALEX_NOOB</span><span class="lb-streak">DIED AT 12 DAYS</span></div></div>
-                <div class="lb-row dead-row"><span class="dead-icon">☠️</span><div class="lb-avatar">S</div><div class="lb-info"><span class="lb-name">SLEEPY_HEAD</span><span class="lb-streak">DIED AT 2 DAYS</span></div></div>
-            </div>
-            <button class="close-modal" onclick="closeGraveyard()">[CLOSE]</button>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="inviteModal">
-        <div class="modal-window">
-            <div class="modal-title">BLOOD PACT</div>
-            <div style="font-size: 8px; color: #aaa; margin-bottom: 15px; line-height: 1.6;">
-                INVITE 3 SOULS TO DEADLINE.<br>
-                REWARD: 1 FREE <span style="color:#ff3333">DEFIBRILLATOR</span>.
-            </div>
-            
-            <div class="stats" style="margin-bottom: 10px; border: 1px solid #333; padding: 10px; background: #0a0a0a;">
-                RECRUITS: <span class="highlight">1 / 3</span>
-            </div>
-
-            <div class="recruit-list">
-                <div class="recruit-active">[+] SOUL 1: <span style="color:#fff">DEAD_BOY99</span></div>
-                <div class="recruit-pending">[-] SOUL 2: <span style="color:#444">AWAITING...</span></div>
-                <div class="recruit-pending">[-] SOUL 3: <span style="color:#444">AWAITING...</span></div>
-            </div>
-
-            <button class="action-btn buy" onclick="shareToTelegram()">COPY LINK</button>
-            <div style="font-size: 6px; color: #666; margin-top: 10px;">* REWARD UNLOCKS ONLY AFTER A NEW PLAYER REGISTERS VIA YOUR LINK.</div>
-            <button class="close-modal" onclick="closeInvite()">[CLOSE]</button>
-        </div>
-    </div>
-
-    <script>
-        let timeLeft = 24 * 60 * 60; 
-        
-        // --- ЗАГРУЗКА ДАННЫХ ИЗ ПАМЯТИ ---
-        let streak = parseInt(localStorage.getItem("playerStreak")) || 0;
-        document.getElementById("streak").innerText = streak;
-        document.getElementById("myLbStreak").innerText = `${streak} DAYS ALIVE`;
-
-        let playerName = "UNKNOWN";
-        let defibrillators = parseInt(localStorage.getItem("defibCount")) || 0;
-        document.getElementById("defibDisplay").innerText = defibrillators;
-
-        let activePlayers = 428; let deadPlayers = 12453;
-        document.getElementById("statActive").innerText = activePlayers.toLocaleString();
-        document.getElementById("statDead").innerText = deadPlayers.toLocaleString();
-
-        // Живой счетчик смертей на глазах
-        setInterval(() => {
-            if (Math.random() > 0.5) { 
-                deadPlayers++; activePlayers--;
-                document.getElementById("statActive").innerText = activePlayers.toLocaleString();
-                document.getElementById("statDead").innerText = deadPlayers.toLocaleString();
-            }
-        }, 15000);
-
-        const videoFiles = { 'academia': 'academia.mp4', 'library': 'library.mp4', 'crypt': 'crypt.mp4', 'stable': 'stable.mp4', 'abyss': 'abyss.mp4', 'neon': 'neon.mp4', 'glitch': 'glitch.mp4' };
-
-        function updateTimerDisplay() {
-            let h = Math.floor(timeLeft / 3600); let m = Math.floor((timeLeft % 3600) / 60); let s = timeLeft % 60;
-            h = h < 10 ? "0" + h : h; m = m < 10 ? "0" + m : m; s = s < 10 ? "0" + s : s;
-            document.getElementById("timer").innerText = `${h}:${m}:${s}`;
-        }
-        setInterval(() => { timeLeft--; updateTimerDisplay(); }, 1000); 
-
-        function pressAlive() {
-            let now = new Date(); let today = now.toDateString(); 
-            let lastClick = localStorage.getItem("lastClickDate");
-            let btn = document.getElementById("aliveBtn");
-
-            if (lastClick === today) {
-                let originalText = btn.innerText;
-                btn.innerText = "ALREADY ALIVE"; btn.style.backgroundColor = "#333"; btn.style.borderColor = "#555"; btn.style.boxShadow = "none"; btn.style.color = "#888";
-                setTimeout(() => { btn.innerText = originalText; btn.style.backgroundColor = ""; btn.style.borderColor = ""; btn.style.boxShadow = ""; btn.style.color = ""; }, 2000);
-                return; 
-            }
-            
-            localStorage.setItem("lastClickDate", today);
-            timeLeft = 24 * 60 * 60; 
-            
-            streak++;
-            localStorage.setItem("playerStreak", streak);
-            
-            document.getElementById("streak").innerText = streak;
-            document.getElementById("myLbStreak").innerText = `${streak} DAYS ALIVE`;
-            updateTimerDisplay();
-            let timerEl = document.getElementById("timer"); timerEl.style.color = "#fff"; setTimeout(() => { timerEl.style.color = ""; }, 200);
-        }
-
-        // --- DEV TOOLS (Функции для теста) ---
-        function resetDay() {
-            localStorage.removeItem("lastClickDate"); 
-            alert("[DEV TOOL] DAY RESET. Симуляция нового дня успешна! Теперь кнопка 'I AM ALIVE' снова активна, нажми её, чтобы прибавить день к стрику.");
-        }
-
-        function buyDefibrillator(fromDeathScreen = false) {
-            if (defibrillators >= 5) {
-                alert("MAX CAPACITY REACHED (5/5). YOU CANNOT CARRY MORE.");
-                return;
-            }
-
-            alert('TG Payments Init... (Имитация покупки)'); 
-            defibrillators++;
-            localStorage.setItem("defibCount", defibrillators);
-            document.getElementById("defibDisplay").innerText = defibrillators;
-            
-            if (fromDeathScreen) {
-                triggerDeathScreen();
-            } else {
-                alert("DEFIBRILLATOR PURCHASED! Added to inventory.");
-            }
-        }
-
-        function triggerDeathScreen() {
-            closeProfile();
-            document.getElementById("deathModal").style.display = "flex";
-            document.getElementById("deathStreakDisplay").innerText = streak;
-            
-            if (defibrillators > 0) {
-                document.getElementById("defibOption").style.display = "block";
-                document.getElementById("noDefibOption").style.display = "none";
-                document.getElementById("deathDefibCount").innerText = defibrillators;
-            } else {
-                document.getElementById("defibOption").style.display = "none";
-                document.getElementById("noDefibOption").style.display = "block";
-            }
-        }
-
-        function useDefibrillator() {
-            if (defibrillators > 0) {
-                defibrillators--;
-                localStorage.setItem("defibCount", defibrillators);
-                document.getElementById("defibDisplay").innerText = defibrillators;
-                
-                timeLeft = 24 * 60 * 60;
-                let now = new Date();
-                localStorage.setItem("lastClickDate", now.toDateString()); 
-
-                document.getElementById("deathModal").style.display = "none";
-                alert("YOU CHEATED DEATH. STREAK SAVED.");
-            }
-        }
-
-        function acceptDeath() {
-            streak = 0;
-            localStorage.setItem("playerStreak", streak);
-            document.getElementById("streak").innerText = streak;
-            document.getElementById("myLbStreak").innerText = "0 DAYS ALIVE";
-            
-            localStorage.removeItem("lastClickDate"); 
-            document.getElementById("deathModal").style.display = "none";
-            alert("YOUR STREAK IS DEAD. START OVER.");
-        }
-
-        function openMarket() { document.getElementById("marketModal").style.display = "flex"; } function closeMarket() { document.getElementById("marketModal").style.display = "none"; }
-        function openProfile() { document.getElementById("profileModal").style.display = "flex"; } function closeProfile() { document.getElementById("profileModal").style.display = "none"; }
-        function openLeaderboard() { document.getElementById("leaderboardModal").style.display = "flex"; } function closeLeaderboard() { document.getElementById("leaderboardModal").style.display = "none"; }
-        function openGraveyard() { document.getElementById("graveyardModal").style.display = "flex"; } function closeGraveyard() { document.getElementById("graveyardModal").style.display = "none"; }
-        function openInvite() { document.getElementById("inviteModal").style.display = "flex"; } function closeInvite() { document.getElementById("inviteModal").style.display = "none"; }
-        function openFriends() { document.getElementById("friendsModal").style.display = "flex"; } function closeFriends() { document.getElementById("friendsModal").style.display = "none"; }
-
-        function shareToTelegram() {
-            let gameUrl = "https://linkoz01.github.io/deadline-game/";
-            let text = `Сможешь ли ты выжить? Мой стрик в DEADLINE: ${streak} дней.\nПрисоединяйся, пока не истекло время.`;
-            let tgUrl = `https://t.me/share/url?url=${encodeURIComponent(gameUrl)}&text=${encodeURIComponent(text)}`;
-            window.open(tgUrl, '_blank');
-        }
-
-        function handleItemClick(button, themeKey) {
-            if (button.classList.contains("buy")) {
-                button.classList.remove("buy"); button.classList.add("equip"); button.innerText = "EQUIP (НАДЕТЬ)";
-            } else if (button.classList.contains("equip")) {
-                let allSkinBtns = document.querySelectorAll(".skin-btn.equipped");
-                allSkinBtns.forEach(btn => { btn.classList.remove("equipped"); btn.classList.add("equip"); btn.innerText = "EQUIP (НАДЕТЬ)"; });
-                button.classList.remove("equip"); button.classList.add("equipped"); button.innerText = "EQUIPPED";
-                document.getElementById("gameBody").className = `theme-${themeKey}`;
-                document.getElementById("myLeaderboardRow").className = `lb-row my-row theme-${themeKey}`;
-
-                let videoPlayer = document.getElementById("video-background"); let isPC = window.innerWidth > 768; 
-                let folder = isPC ? "Backgrounds/PC/" : "Backgrounds/Phone/";
-                videoPlayer.src = folder + videoFiles[themeKey]; videoPlayer.style.display = "block"; document.getElementById("video-overlay").style.display = "block";
-                videoPlayer.load(); videoPlayer.play().catch(e => console.log("Autoplay blocked"));
-                setTimeout(() => { closeMarket(); }, 300); 
-            }
-        }
-        function saveProfile() {
-            let newName = document.getElementById("nicknameInput").value.trim().toUpperCase();
-            if (newName !== "") { playerName = newName; document.getElementById("displayNickname").innerText = playerName; document.getElementById("myLbName").innerText = playerName; document.getElementById("myLbAvatar").innerText = playerName.charAt(0); document.getElementById("avatarPreview").innerText = playerName.charAt(0); }
-            closeProfile();
-        }
-        
-        updateTimerDisplay();
-    </script>
-</body>
-</html>        .header { z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 10px; flex-shrink: 0; }
-        .top-buttons { display: flex; gap: 5px; justify-content: center; flex-wrap: wrap; width: 100%; }
-        .nav-btn { background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(2px); border: 2px solid #333; color: #aaa; font-family: 'Press Start 2P', monospace; font-size: 8px; padding: 8px; cursor: pointer; transition: 0.2s; }
-        .nav-btn:hover { color: #fff; border-color: #666; background: rgba(0,0,0,0.9); }
-        .nav-btn.friends-btn { border-color: #1a365d; color: #8ab4f8; } .nav-btn.friends-btn:hover { border-color: #5c9ce6; color: #fff; }
-        .ru-sub { display: block; font-size: 6px; color: #888; margin-top: 4px; }
-        .subtitle { font-size: 8px; color: #ccc; margin-top: 5px; text-shadow: 1px 1px 2px #000; }
-        
-        .stats { margin-top: 15px; font-size: 10px; color: #ccc; line-height: 1.5; text-shadow: 1px 1px 3px #000, -1px -1px 3px #000; font-weight: bold;}
-        .highlight { color: #fff; } .player-name { color: #ff3333; }
-        .inventory { margin-top: 5px; font-size: 8px; color: #888; }
-        .defib-count { color: #ff3333; }
-        
-        .global-stats { margin-top: 8px; font-size: 8px; color: #888; text-shadow: 1px 1px 2px #000; background: rgba(0,0,0,0.5); padding: 5px 10px; border: 1px solid #333; border-radius: 3px; }
-        .stat-alive { color: #00ff00; } .stat-dead { color: #ff3333; }
-
-        .timer-container { flex-grow: 1; display: flex; align-items: center; justify-content: center; z-index: 2; }
-        .button-container { margin-bottom: 15px; z-index: 2; flex-shrink: 0; }
-        .alive-btn { font-family: 'Press Start 2P', monospace; padding: 20px 30px; font-size: 16px; cursor: pointer; box-shadow: inset -4px -4px 0px rgba(0,0,0,0.5), 0 0 15px rgba(0,0,0,0.8); transition: all 0.1s; width: 90%; max-width: 300px; }
-        .alive-btn:active { transform: translateY(4px); }
-
-        .footer { margin-bottom: 5px; z-index: 2; display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; flex-shrink: 0; }
-        .menu-btn { background: none; border: none; color: #aaa; font-family: 'Press Start 2P', monospace; font-size: 10px; text-decoration: underline; cursor: pointer; text-shadow: 1px 1px 2px #000; }
-        .menu-btn:hover { color: #fff; }
-
-        /* Окна */
-        .modal-overlay { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.95); z-index: 10; flex-direction: column; align-items: center; justify-content: center; }
-        .modal-window { background-color: #111; border: 4px solid #4a0000; width: 90%; max-width: 380px; padding: 15px; box-shadow: 0 0 20px rgba(255, 0, 0, 0.2); max-height: 85vh; overflow-y: auto; }
-        .modal-window::-webkit-scrollbar { width: 5px; } .modal-window::-webkit-scrollbar-thumb { background: #4a0000; }
-        .modal-title { color: #ff3333; font-size: 14px; margin-bottom: 15px; text-shadow: 2px 2px #000; }
-
-        /* ЭКРАН СМЕРТИ */
-        #deathModal .modal-window { border-color: #ff0000; box-shadow: 0 0 50px rgba(255, 0, 0, 0.5); animation: glitchDeath 0.2s infinite; }
-        @keyframes glitchDeath { 0% { transform: translate(0) } 20% { transform: translate(-2px, 2px) } 40% { transform: translate(-2px, -2px) } 60% { transform: translate(2px, 2px) } 80% { transform: translate(2px, -2px) } 100% { transform: translate(0) } }
-        #deathModal .modal-title { font-size: 20px; text-shadow: 0 0 10px #ff0000; animation: blink 1s infinite; }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-
-        .leaderboard-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; }
-        .lb-row { display: flex; align-items: center; justify-content: flex-start; background-color: #1a1a1a; border: 2px solid #333; padding: 10px; text-align: left; }
-        .lb-row.my-row { border-color: #ff3333; animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { box-shadow: 0 0 5px #ff3333; } 50% { box-shadow: 0 0 15px #ff3333; } 100% { box-shadow: 0 0 5px #ff3333; } }
-        .lb-rank { font-size: 12px; color: #666; width: 45px; flex-shrink: 0; text-align: left; }
-        .lb-avatar { width: 24px; height: 24px; background-color: #000; border: 1px solid #555; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #aaa; margin-right: 15px; flex-shrink: 0; }
-        .lb-info { flex-grow: 1; display: flex; flex-direction: column; gap: 5px; overflow: hidden; }
-        .lb-name { font-size: 10px; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .lb-streak { font-size: 8px; color: #ff3333; }
-
-        /* Темы строк */
-        .lb-row.theme-academia { border-color: #8b0000; background: linear-gradient(90deg, #2a0808, #111); } .lb-row.theme-academia .lb-name::before { content: '📚 '; }
-        .lb-row.theme-library { border-color: #4a4a6a; background: linear-gradient(90deg, #1a1a25, #111); } .lb-row.theme-library .lb-name::before { content: '🕯️ '; }
-        .lb-row.theme-crypt { border-color: #4a5a4a; background: linear-gradient(90deg, #151a15, #111); border-style: dashed; } .lb-row.theme-crypt .lb-name::before { content: '💀 '; } .lb-row.theme-crypt .lb-name { color: #ccffcc; text-shadow: 0 0 5px #00ff00; }
-        .lb-row.theme-stable { border-color: #b8860b; background: linear-gradient(90deg, #2a1505, #111); } .lb-row.theme-stable .lb-name::before { content: '👑 '; } .lb-row.theme-stable .lb-name { color: #ffd700; }
-        .lb-row.theme-abyss { border-color: #00ff00; background: linear-gradient(90deg, #001a00, #111); } .lb-row.theme-abyss .lb-name::before { content: '/>_ '; color: #00ff00;} .lb-row.theme-abyss .lb-name { color: #00ff00; text-shadow: 0 0 8px #00ff00; }
-        .lb-row.theme-neon { border-color: #ff00ff; background: linear-gradient(90deg, #1a052a, #111); } .lb-row.theme-neon .lb-name::before { content: '⚡ '; } .lb-row.theme-neon .lb-name { color: #ffb3ff; text-shadow: 0 0 8px #ff00ff; }
-        .lb-row.theme-glitch { border-color: #ffff00; background: linear-gradient(90deg, #1a1a00, #111); } .lb-row.theme-glitch .lb-name::before { content: '⚠ '; color: #ffff00; } .lb-row.theme-glitch .lb-name { text-shadow: -2px 0 red, 2px 0 blue; }
-        .lb-row.dead-row { background-color: #0d0d0d; border-color: #222; opacity: 0.7; } .dead-icon { font-size: 14px; width: 45px; flex-shrink: 0; text-align: left; } .lb-row.dead-row .lb-avatar { border-style: dashed; color: #444; } .lb-row.dead-row .lb-name { color: #666; text-decoration: line-through; } .lb-row.dead-row .lb-streak { color: #444; }
-
-        .avatar-box { width: 64px; height: 64px; background-color: #222; border: 2px solid #555; margin: 0 auto 15px auto; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #666; }
-        .retro-input { background-color: #000; color: #fff; font-family: 'Press Start 2P', monospace; font-size: 10px; border: 2px solid #4a0000; padding: 10px; width: 80%; text-align: center; margin-bottom: 15px; outline: none; }
-        .retro-input:focus { border-color: #ff3333; }
-        
-        .market-item { background-color: #1a1a1a; border: 2px solid #333; padding: 10px; margin-bottom: 10px; text-align: left; }
-        .item-name { color: #fff; font-size: 10px; margin-bottom: 6px; line-height: 1.4; }
-        .item-desc { font-size: 6px; color: #888; margin-bottom: 10px; line-height: 1.4; }
-        
-        .action-btn { background-color: #fff; color: #000; font-family: 'Press Start 2P', monospace; border: 2px solid #aaa; padding: 10px; font-size: 10px; cursor: pointer; width: 100%; text-align: center; transition: 0.2s; }
-        .action-btn.buy:hover { background-color: #ff3333; color: #fff; border-color: #ff3333; }
-        .action-btn.equip { background-color: #333; color: #fff; border-color: #555; }
-        .action-btn.equip:hover { background-color: #555; }
-        .action-btn.equipped { background-color: #8b0000; color: #fff; border-color: #ff3333; cursor: default; }
-        
-        .close-modal { background: none; border: none; color: #666; font-family: 'Press Start 2P', monospace; font-size: 10px; margin-top: 10px; cursor: pointer; padding: 10px; }
-        .close-modal:hover { color: #fff; }
-        .recruit-list { text-align: left; font-size: 8px; color: #aaa; margin-bottom: 20px; line-height: 2; background: #111; padding: 10px; border: 1px dashed #444; }
-        .recruit-active { color: #00ff00; } .recruit-pending { color: #555; }
-        #ghostContainer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
-        .ghost-entity { position: absolute; color: #aaa; font-size: 8px; font-family: 'Press Start 2P', monospace; opacity: 0; text-shadow: 0 0 5px rgba(0, 0, 0, 0.8); animation: floatUp 8s linear forwards; }
-        @keyframes floatUp { 0% { transform: translateY(100vh); opacity: 0; } 20% { opacity: 0.5; } 80% { opacity: 0.5; } 100% { transform: translateY(-100px); opacity: 0; } }
-    </style>
-</head>
-<body id="gameBody" class="bg-default">
-
-    <video id="video-background" autoplay loop muted playsinline></video>
-    <div id="video-overlay"></div>
-    <div id="ghostContainer"></div>
-
-    <div class="header">
-        <div class="top-buttons">
-            <button class="nav-btn" onclick="openProfile()">[DOSSIER]<span class="ru-sub">(ДОСЬЕ)</span></button>
-            <button class="nav-btn" onclick="openLeaderboard()">[RANK]<span class="ru-sub">(РЕЙТИНГ)</span></button>
-            <button class="nav-btn friends-btn" onclick="openFriends()">[FRIENDS]<span class="ru-sub">(ДРУЗЬЯ)</span></button>
-            <button class="nav-btn graveyard-btn" onclick="openGraveyard()">[GRAVEYARD]<span class="ru-sub">(КЛАДБИЩЕ)</span></button>
-        </div>
-        <h1 id="gameTitle">DEADLINE</h1>
-        <div class="subtitle">AN ONLINE GAME OF DISCIPLINE</div>
-        
-        <div class="stats">
-            PLAYER: <span class="highlight player-name" id="displayNickname">UNKNOWN</span><br>
-            CURRENT STREAK: <span class="highlight" id="streak">0</span> DAYS
-            <!-- ИНВЕНТАРЬ -->
-            <div class="inventory">[❤️ DEFIBRILLATORS: <span id="defibDisplay" class="defib-count">0</span> / 5]</div>
-        </div>
-
-        <div class="global-stats">
-            GLOBAL: <span class="stat-alive"><span id="statActive">0</span> ACTIVE</span> // <span class="stat-dead"><span id="statDead">0</span> DEAD</span>
-        </div>
-    </div>
-
-    <div class="timer-container">
-        <div id="timer">24:00:00</div>
-    </div>
-
-    <div class="button-container">
-        <button class="alive-btn" id="aliveBtn" onclick="pressAlive()">I AM ALIVE</button>
-    </div>
-
-    <div class="footer">
-        <button class="menu-btn" onclick="openMarket()">[BLACK MARKET (РЫНОК)]</button>
-        <button class="menu-btn" style="color:#ff3333;" onclick="openInvite()">[BLOOD PACT (ПРИГЛАСИТЬ)]</button>
-    </div>
-
     <!-- ЭКРАН СМЕРТИ -->
     <div class="modal-overlay" id="deathModal" style="z-index: 9999; background-color: rgba(10, 0, 0, 0.98);">
         <div class="modal-window">
@@ -609,7 +189,6 @@
             
             <div style="border-top: 1px dashed #333; padding-top: 15px; margin-top: 10px;">
                 <div style="font-size: 6px; color: #555; margin-bottom: 10px;">DEV TOOLS (ONLY FOR CREATOR)</div>
-                <!-- НОВАЯ КНОПКА ДЛЯ ТЕСТА СТРИКА -->
                 <button class="action-btn" onclick="resetDay()" style="background-color: #333; color: #fff; border-color: #555; margin-bottom: 5px;">RESET DAY (TEST CLICKS)</button>
                 <button class="action-btn" onclick="triggerDeathScreen()" style="background-color: #330000; color: #ff3333; border-color: #ff3333;">KILL ME (TEST DEATH)</button>
             </div>
@@ -685,16 +264,17 @@
     <div class="modal-overlay" id="graveyardModal">
         <div class="modal-window grave-style">
             <div class="modal-title grave-title">GRAVEYARD</div>
-            <div style="font-size: 8px; color: #555; margin-bottom: 15px;">REST IN PIECES</div>
+            <div style="font-size: 8px; color: #555; margin-bottom: 15px;">REST IN PIECES (ПОКОЙТЕСЬ НА КУСОЧКИ)</div>
             <div class="leaderboard-list">
                 <div class="lb-row dead-row"><span class="dead-icon">☠️</span><div class="lb-avatar">L</div><div class="lb-info"><span class="lb-name">LOSER_99</span><span class="lb-streak">DIED AT 45 DAYS</span></div></div>
                 <div class="lb-row dead-row"><span class="dead-icon">☠️</span><div class="lb-avatar">A</div><div class="lb-info"><span class="lb-name">ALEX_NOOB</span><span class="lb-streak">DIED AT 12 DAYS</span></div></div>
+                <div class="lb-row dead-row"><span class="dead-icon">☠️</span><div class="lb-avatar">S</div><div class="lb-info"><span class="lb-name">SLEEPY_HEAD</span><span class="lb-streak">DIED AT 2 DAYS</span></div></div>
             </div>
             <button class="close-modal" onclick="closeGraveyard()">[CLOSE]</button>
         </div>
     </div>
 
-    <!-- ВОССТАНОВЛЕННАЯ РЕФЕРАЛКА -->
+    <!-- РЕФЕРАЛКА -->
     <div class="modal-overlay" id="inviteModal">
         <div class="modal-window">
             <div class="modal-title">BLOOD PACT</div>
@@ -722,8 +302,6 @@
     <script>
         let timeLeft = 24 * 60 * 60; 
         
-        // --- ЗАГРУЗКА ДАННЫХ ИЗ ПАМЯТИ ---
-        // Теперь стрик тоже сохраняется и загружается!
         let streak = parseInt(localStorage.getItem("playerStreak")) || 0;
         document.getElementById("streak").innerText = streak;
         document.getElementById("myLbStreak").innerText = `${streak} DAYS ALIVE`;
@@ -735,6 +313,14 @@
         let activePlayers = 428; let deadPlayers = 12453;
         document.getElementById("statActive").innerText = activePlayers.toLocaleString();
         document.getElementById("statDead").innerText = deadPlayers.toLocaleString();
+
+        setInterval(() => {
+            if (Math.random() > 0.5) { 
+                deadPlayers++; activePlayers--;
+                document.getElementById("statActive").innerText = activePlayers.toLocaleString();
+                document.getElementById("statDead").innerText = deadPlayers.toLocaleString();
+            }
+        }, 15000);
 
         const videoFiles = { 'academia': 'academia.mp4', 'library': 'library.mp4', 'crypt': 'crypt.mp4', 'stable': 'stable.mp4', 'abyss': 'abyss.mp4', 'neon': 'neon.mp4', 'glitch': 'glitch.mp4' };
 
@@ -757,11 +343,9 @@
                 return; 
             }
             
-            // Если игрок нажал первый раз за сегодня:
             localStorage.setItem("lastClickDate", today);
             timeLeft = 24 * 60 * 60; 
             
-            // Увеличиваем стрик и сохраняем его в память!
             streak++;
             localStorage.setItem("playerStreak", streak);
             
@@ -771,10 +355,9 @@
             let timerEl = document.getElementById("timer"); timerEl.style.color = "#fff"; setTimeout(() => { timerEl.style.color = ""; }, 200);
         }
 
-        // --- DEV TOOLS (Функции для теста) ---
         function resetDay() {
-            localStorage.removeItem("lastClickDate"); // Сбрасываем блокировку на сегодняшний день
-            alert("[DEV TOOL] DAY RESET. You can click 'I AM ALIVE' again to increase streak.");
+            localStorage.removeItem("lastClickDate"); 
+            alert("[DEV TOOL] DAY RESET. Симуляция нового дня успешна! Теперь кнопка 'I AM ALIVE' снова активна, нажми её, чтобы прибавить день к стрику.");
         }
 
         function buyDefibrillator(fromDeathScreen = false) {
@@ -783,7 +366,7 @@
                 return;
             }
 
-            alert('TG Payments Init... (Имитация покупки)'); 
+            alert('TG Payment Init... (Имитация покупки)'); 
             defibrillators++;
             localStorage.setItem("defibCount", defibrillators);
             document.getElementById("defibDisplay").innerText = defibrillators;
@@ -826,7 +409,6 @@
         }
 
         function acceptDeath() {
-            // Обнуляем стрик и сохраняем 0 в память
             streak = 0;
             localStorage.setItem("playerStreak", streak);
             document.getElementById("streak").innerText = streak;
@@ -874,7 +456,6 @@
             closeProfile();
         }
         
-        // Запуск таймера при старте
         updateTimerDisplay();
     </script>
 </body>
