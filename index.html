@@ -357,12 +357,49 @@
         setInterval(() => { timeLeft--; updateTimerDisplay(); }, 1000); 
 
         function pressAlive() {
+            // Получаем текущую дату (например, "Fri Jun 19 2026")
+            let now = new Date();
+            let today = now.toDateString(); 
+            
+            // Проверяем, когда игрок нажимал кнопку в последний раз
+            let lastClick = localStorage.getItem("lastClickDate");
+
+            let btn = document.getElementById("aliveBtn");
+
+            // Если дата совпадает — он уже нажимал сегодня
+            if (lastClick === today) {
+                let originalText = btn.innerText;
+                btn.innerText = "ALREADY ALIVE";
+                btn.style.backgroundColor = "#333";
+                btn.style.borderColor = "#555";
+                btn.style.boxShadow = "none";
+                btn.style.color = "#888";
+                
+                // Возвращаем кнопке нормальный вид через 2 секунды
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                    btn.style.backgroundColor = "";
+                    btn.style.borderColor = "";
+                    btn.style.boxShadow = "";
+                    btn.style.color = "";
+                }, 2000);
+                
+                return; // Останавливаем функцию, стрик не растет!
+            }
+
+            // ЕСЛИ ЭТО НОВЫЙ ДЕНЬ:
+            
+            // Запоминаем сегодняшнюю дату
+            localStorage.setItem("lastClickDate", today);
+            
+            // Обновляем таймер и стрик
             timeLeft = 24 * 60 * 60;
             streak++;
             document.getElementById("streak").innerText = streak;
             document.getElementById("myLbStreak").innerText = `${streak} DAYS ALIVE`;
             updateTimerDisplay();
             
+            // Эффект вспышки таймера
             let timerEl = document.getElementById("timer");
             timerEl.style.color = "#fff";
             setTimeout(() => { timerEl.style.color = ""; }, 200);
