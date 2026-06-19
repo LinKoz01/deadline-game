@@ -26,9 +26,9 @@
         #video-background {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
-            object-fit: cover; /* Растягивает без искажений */
+            object-fit: cover; 
             z-index: 0;
-            display: none; /* Скрыто по умолчанию, пока не купим тему */
+            display: none; 
             pointer-events: none;
         }
 
@@ -36,7 +36,6 @@
         #video-overlay {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
-            /* Центр теперь затемнен на 50% (0.5), а края на 80-90% для читаемости текста */
             background: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.5) 15%, rgba(0,0,0,0.5) 85%, rgba(0,0,0,0.9) 100%);
             z-index: 1;
             display: none;
@@ -117,6 +116,20 @@
         .highlight { color: #fff; }
         .player-name { color: #ff3333; }
 
+        /* --- НОВЫЙ БЛОК ГЛОБАЛЬНОЙ СТАТИСТИКИ --- */
+        .global-stats {
+            margin-top: 8px;
+            font-size: 8px;
+            color: #888;
+            text-shadow: 1px 1px 2px #000;
+            background: rgba(0,0,0,0.5);
+            padding: 5px 10px;
+            border: 1px solid #333;
+            border-radius: 3px;
+        }
+        .stat-alive { color: #00ff00; }
+        .stat-dead { color: #ff3333; }
+
         .timer-container { flex-grow: 1; display: flex; align-items: center; justify-content: center; z-index: 2; }
         
         .button-container { margin-bottom: 15px; z-index: 2; flex-shrink: 0; }
@@ -155,26 +168,20 @@
         /* ПРЕМИАЛЬНЫЕ КАСТОМИЗАЦИИ СТРОК */
         .lb-row.theme-academia { border-color: #8b0000; background: linear-gradient(90deg, #2a0808, #111); }
         .lb-row.theme-academia .lb-name::before { content: '📚 '; }
-
         .lb-row.theme-library { border-color: #4a4a6a; background: linear-gradient(90deg, #1a1a25, #111); }
         .lb-row.theme-library .lb-name::before { content: '🕯️ '; }
-
         .lb-row.theme-crypt { border-color: #4a5a4a; background: linear-gradient(90deg, #151a15, #111); border-style: dashed; }
         .lb-row.theme-crypt .lb-name::before { content: '💀 '; }
         .lb-row.theme-crypt .lb-name { color: #ccffcc; text-shadow: 0 0 5px #00ff00; }
-
         .lb-row.theme-stable { border-color: #b8860b; background: linear-gradient(90deg, #2a1505, #111); }
         .lb-row.theme-stable .lb-name::before { content: '👑 '; }
         .lb-row.theme-stable .lb-name { color: #ffd700; }
-
         .lb-row.theme-abyss { border-color: #00ff00; background: linear-gradient(90deg, #001a00, #111); }
         .lb-row.theme-abyss .lb-name::before { content: '/>_ '; color: #00ff00;}
         .lb-row.theme-abyss .lb-name { color: #00ff00; text-shadow: 0 0 8px #00ff00; }
-
         .lb-row.theme-neon { border-color: #ff00ff; background: linear-gradient(90deg, #1a052a, #111); }
         .lb-row.theme-neon .lb-name::before { content: '⚡ '; }
         .lb-row.theme-neon .lb-name { color: #ffb3ff; text-shadow: 0 0 8px #ff00ff; }
-
         .lb-row.theme-glitch { border-color: #ffff00; background: linear-gradient(90deg, #1a1a00, #111); }
         .lb-row.theme-glitch .lb-name::before { content: '⚠ '; color: #ffff00; }
         .lb-row.theme-glitch .lb-name { text-shadow: -2px 0 red, 2px 0 blue; }
@@ -210,7 +217,6 @@
 
     <video id="video-background" autoplay loop muted playsinline></video>
     <div id="video-overlay"></div>
-
     <div id="ghostContainer"></div>
 
     <div class="header">
@@ -221,9 +227,15 @@
         </div>
         <h1 id="gameTitle">DEADLINE</h1>
         <div class="subtitle">AN ONLINE GAME OF DISCIPLINE</div>
+        
         <div class="stats">
             PLAYER: <span class="highlight player-name" id="displayNickname">UNKNOWN</span><br>
             CURRENT STREAK: <span class="highlight" id="streak">0</span> DAYS
+        </div>
+
+        <!-- ГЛОБАЛЬНАЯ СТАТИСТИКА -->
+        <div class="global-stats">
+            GLOBAL: <span class="stat-alive"><span id="statActive">0</span> ACTIVE</span> // <span class="stat-dead"><span id="statDead">0</span> DEAD</span>
         </div>
     </div>
 
@@ -239,6 +251,7 @@
         <button class="menu-btn" onclick="openMarket()">[BLACK MARKET (ЧЕРНЫЙ РЫНОК)]</button>
     </div>
 
+    <!-- Модалка Рейтинга -->
     <div class="modal-overlay" id="leaderboardModal">
         <div class="modal-window">
             <div class="modal-title">GLOBAL RANKING</div>
@@ -264,6 +277,7 @@
         </div>
     </div>
 
+    <!-- Модалка Кладбища -->
     <div class="modal-overlay" id="graveyardModal">
         <div class="modal-window grave-style">
             <div class="modal-title grave-title">GRAVEYARD</div>
@@ -277,6 +291,7 @@
         </div>
     </div>
 
+    <!-- Модалка Черного Рынка -->
     <div class="modal-overlay" id="marketModal">
         <div class="modal-window">
             <div class="modal-title">BLACK MARKET</div>
@@ -318,6 +333,7 @@
         </div>
     </div>
 
+    <!-- Модалка Профиля -->
     <div class="modal-overlay" id="profileModal">
         <div class="modal-window">
             <div class="modal-title">DOSSIER (ДОСЬЕ)</div>
@@ -332,6 +348,22 @@
         let timeLeft = 24 * 60 * 60; 
         let streak = 0;
         let playerName = "UNKNOWN";
+
+        // --- ФЕЙКОВАЯ ЖИВАЯ СТАТИСТИКА ---
+        let activePlayers = 428;
+        let deadPlayers = 12453;
+
+        document.getElementById("statActive").innerText = activePlayers.toLocaleString();
+        document.getElementById("statDead").innerText = deadPlayers.toLocaleString();
+
+        setInterval(() => {
+            if (Math.random() > 0.5) { // 50% шанс, что кто-то проиграет каждые 15 сек
+                deadPlayers++;
+                activePlayers--;
+                document.getElementById("statActive").innerText = activePlayers.toLocaleString();
+                document.getElementById("statDead").innerText = deadPlayers.toLocaleString();
+            }
+        }, 15000);
 
         // --- ЛОГИКА ФОНОВЫХ ВИДЕО ---
         const videoFiles = {
@@ -357,16 +389,11 @@
         setInterval(() => { timeLeft--; updateTimerDisplay(); }, 1000); 
 
         function pressAlive() {
-            // Получаем текущую дату (например, "Fri Jun 19 2026")
             let now = new Date();
             let today = now.toDateString(); 
-            
-            // Проверяем, когда игрок нажимал кнопку в последний раз
             let lastClick = localStorage.getItem("lastClickDate");
-
             let btn = document.getElementById("aliveBtn");
 
-            // Если дата совпадает — он уже нажимал сегодня
             if (lastClick === today) {
                 let originalText = btn.innerText;
                 btn.innerText = "ALREADY ALIVE";
@@ -375,7 +402,6 @@
                 btn.style.boxShadow = "none";
                 btn.style.color = "#888";
                 
-                // Возвращаем кнопке нормальный вид через 2 секунды
                 setTimeout(() => {
                     btn.innerText = originalText;
                     btn.style.backgroundColor = "";
@@ -384,22 +410,17 @@
                     btn.style.color = "";
                 }, 2000);
                 
-                return; // Останавливаем функцию, стрик не растет!
+                return; 
             }
-
-            // ЕСЛИ ЭТО НОВЫЙ ДЕНЬ:
             
-            // Запоминаем сегодняшнюю дату
             localStorage.setItem("lastClickDate", today);
             
-            // Обновляем таймер и стрик
             timeLeft = 24 * 60 * 60;
             streak++;
             document.getElementById("streak").innerText = streak;
             document.getElementById("myLbStreak").innerText = `${streak} DAYS ALIVE`;
             updateTimerDisplay();
             
-            // Эффект вспышки таймера
             let timerEl = document.getElementById("timer");
             timerEl.style.color = "#fff";
             setTimeout(() => { timerEl.style.color = ""; }, 200);
@@ -430,11 +451,9 @@
                 button.classList.add("equipped");
                 button.innerText = "EQUIPPED";
                 
-                // Переключаем классы цвета для текста/кнопок
                 document.getElementById("gameBody").className = `theme-${themeKey}`;
                 document.getElementById("myLeaderboardRow").className = `lb-row my-row theme-${themeKey}`;
 
-                // --- ЗАГРУЗКА ВИДЕО В ЗАВИСИМОСТИ ОТ УСТРОЙСТВА ---
                 let videoPlayer = document.getElementById("video-background");
                 let isPC = window.innerWidth > 768; 
                 let folder = isPC ? "Backgrounds/PC/" : "Backgrounds/Phone/";
@@ -443,7 +462,6 @@
                 videoPlayer.style.display = "block";
                 document.getElementById("video-overlay").style.display = "block";
                 
-                // Чтобы видео точно заиграло (браузеры любят блокировать автоплей)
                 videoPlayer.load();
                 videoPlayer.play().catch(e => console.log("Autoplay blocked, waiting for interaction"));
 
