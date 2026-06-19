@@ -82,6 +82,8 @@
         .nav-btn { background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(2px); border: 2px solid #333; color: #aaa; font-family: 'Press Start 2P', monospace; font-size: 8px; padding: 8px; cursor: pointer; transition: 0.2s; }
         .nav-btn:hover { color: #fff; border-color: #666; background: rgba(0,0,0,0.9); }
         .nav-btn.graveyard-btn { border-color: #4a4a4a; color: #888; }
+        .nav-btn.friends-btn { border-color: #1a365d; color: #8ab4f8; }
+        .nav-btn.friends-btn:hover { border-color: #5c9ce6; color: #fff; }
         .ru-sub { display: block; font-size: 6px; color: #888; margin-top: 4px; }
         .subtitle { font-size: 8px; color: #ccc; margin-top: 5px; text-shadow: 1px 1px 2px #000; }
         
@@ -184,6 +186,7 @@
         <div class="top-buttons">
             <button class="nav-btn" onclick="openProfile()">[DOSSIER]<span class="ru-sub">(ДОСЬЕ)</span></button>
             <button class="nav-btn" onclick="openLeaderboard()">[RANK]<span class="ru-sub">(РЕЙТИНГ)</span></button>
+            <button class="nav-btn friends-btn" onclick="openFriends()">[FRIENDS]<span class="ru-sub">(ДРУЗЬЯ)</span></button>
             <button class="nav-btn graveyard-btn" onclick="openGraveyard()">[GRAVEYARD]<span class="ru-sub">(КЛАДБИЩЕ)</span></button>
         </div>
         <h1 id="gameTitle">DEADLINE</h1>
@@ -225,7 +228,7 @@
                 RECRUITS: <span class="highlight">1 / 3</span>
             </div>
 
-            <!-- Список приглашенных душ -->
+            <!-- Список приглашенных душ для бонуса -->
             <div class="recruit-list">
                 <div class="recruit-active">[+] SOUL 1: <span style="color:#fff">DEAD_BOY99</span></div>
                 <div class="recruit-pending">[-] SOUL 2: <span style="color:#444">AWAITING...</span></div>
@@ -235,6 +238,38 @@
             <button class="action-btn buy" onclick="shareToTelegram()">COPY LINK (СКОПИРОВАТЬ)</button>
             <div style="font-size: 6px; color: #666; margin-top: 10px;">* REWARD UNLOCKS ONLY AFTER A NEW PLAYER REGISTERS VIA YOUR LINK.</div>
             <button class="close-modal" onclick="closeInvite()">[CLOSE]</button>
+        </div>
+    </div>
+
+    <!-- НОВАЯ Модалка: Список друзей -->
+    <div class="modal-overlay" id="friendsModal">
+        <div class="modal-window">
+            <div class="modal-title">FRIENDS (ДРУЗЬЯ)</div>
+            <div style="font-size: 8px; color: #aaa; margin-bottom: 15px;">MONITOR THEIR PROGRESS.<br>LAUGH AT THEIR FAILURES.</div>
+            
+            <div class="leaderboard-list">
+                <!-- Друг 1: Жив -->
+                <div class="lb-row theme-academia">
+                    <span class="lb-rank" style="color: #00ff00; font-size: 8px;">ALIVE</span>
+                    <div class="lb-avatar">N</div>
+                    <div class="lb-info"><span class="lb-name">NIGHT_OWL</span><span class="lb-streak">45 DAYS ALIVE</span></div>
+                </div>
+                <!-- Друг 2: Жив -->
+                <div class="lb-row theme-abyss">
+                    <span class="lb-rank" style="color: #00ff00; font-size: 8px;">ALIVE</span>
+                    <div class="lb-avatar">E</div>
+                    <div class="lb-info"><span class="lb-name">EASY_GO</span><span class="lb-streak">3 DAYS ALIVE</span></div>
+                </div>
+                <!-- Друг 3: Мертв -->
+                <div class="lb-row dead-row">
+                    <span class="lb-rank" style="color: #ff3333; font-size: 8px;">DEAD</span>
+                    <div class="lb-avatar">S</div>
+                    <div class="lb-info"><span class="lb-name">SLACKER</span><span class="lb-streak">DIED AT 12 DAYS</span></div>
+                </div>
+            </div>
+
+            <button class="action-btn buy" onclick="closeFriends(); openInvite();" style="margin-bottom: 10px;">ADD MORE FRIENDS</button>
+            <button class="close-modal" onclick="closeFriends()">[CLOSE]</button>
         </div>
     </div>
 
@@ -274,13 +309,13 @@
             <div class="market-item">
                 <div class="item-name" style="color: #ffd700;">PREMIUM: DAILY ALARM</div>
                 <div class="item-desc">BOT SENDS URGENT PUSH REMINDERS + VIP GOLD BADGE</div>
-                <button class="action-btn buy" onclick="alert('TG Payments Init...')">SUBSCRIBE - $4.99/MO</button>
+                <button class="action-btn buy" onclick="alert('TG Payments Init...')">SUBSCRIBE - $3.90/MO</button>
             </div>
             
             <div class="market-item">
                 <div class="item-name" style="color: #ff3333;">DEFIBRILLATOR</div>
                 <div class="item-desc">FORGOT TO CLICK? REVIVE A LOST STREAK. (1 USE)</div>
-                <button class="action-btn buy" onclick="alert('TG Payments Init...')">BUY CHEAT - $14.99</button>
+                <button class="action-btn buy" onclick="alert('TG Payments Init...')">BUY CHEAT - $9.90</button>
             </div>
 
             <div style="font-size: 8px; color: #888; margin: 25px 0 15px 0;">CATEGORY: CLASSIC & DARK</div>
@@ -382,6 +417,8 @@
         function closeGraveyard() { document.getElementById("graveyardModal").style.display = "none"; }
         function openInvite() { document.getElementById("inviteModal").style.display = "flex"; }
         function closeInvite() { document.getElementById("inviteModal").style.display = "none"; }
+        function openFriends() { document.getElementById("friendsModal").style.display = "flex"; }
+        function closeFriends() { document.getElementById("friendsModal").style.display = "none"; }
 
         function shareToTelegram() {
             let gameUrl = "https://linkoz01.github.io/deadline-game/";
