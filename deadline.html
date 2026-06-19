@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>DEADLINE</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+        body {
+            background-color: #0a0a0a;
+            color: #e0e0e0;
+            font-family: 'Press Start 2P', monospace;
+            text-align: center;
+            margin: 0;
+            padding: 20px 10px; 
+            box-sizing: border-box; 
+            display: flex;
+            flex-direction: column;
+            height: 100dvh; 
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* --- КОНТЕЙНЕР ДЛЯ ВИДЕО ФОНА --- */
+        #video-background {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            object-fit: cover; /* Растягивает без искажений */
+            z-index: 0;
+            display: none; /* Скрыто по умолчанию, пока не купим тему */
+            pointer-events: none;
+        }
+
+        /* --- ЗАТЕМНЕНИЕ ПОВЕРХ ВИДЕО --- */
+        #video-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            /* Центр теперь затемнен на 50% (0.5), а края на 80-90% для читаемости текста */
+            background: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.5) 15%, rgba(0,0,0,0.5) 85%, rgba(0,0,0,0.9) 100%);
+            z-index: 1;
+            display: none;
+            pointer-events: none;
+        }
+
+        /* По умолчанию (когда нет видео) */
+        .bg-default { background: radial-gradient(circle, #1a1a1a 1%, #000000 100%); }
+
+        /* ========================================= */
+        /* --- ЖЕСТКИЕ ЦВЕТА ИНТЕРФЕЙСА ПОД КАЖДУЮ ТЕМУ --- */
+        /* ========================================= */
+
+        /* По умолчанию (Красный) */
+        h1 { color: #b30000; text-shadow: 2px 2px 4px #000, 0 0 10px rgba(0,0,0,0.8); font-size: 28px; margin: 0; letter-spacing: 2px; }
+        #timer { color: #ff3333; text-shadow: 0 0 10px #ff0000, 2px 2px 5px #000, -2px -2px 5px #000; font-size: 40px; letter-spacing: 2px; }
+        .alive-btn { background-color: #8b0000; border: 4px solid #4a0000; color: #fff; }
+        .alive-btn:active { background-color: #660000; border-color: #330000; }
+
+        /* Dark Academia */
+        body.theme-academia h1 { color: #d28b48 !important; }
+        body.theme-academia #timer { color: #e6a87c !important; text-shadow: 0 0 15px rgba(210,139,72,0.9), 2px 2px 5px #000 !important; }
+        body.theme-academia .alive-btn { background-color: #5c3a21 !important; border-color: #8b5a2b !important; color: #fff !important; }
+        body.theme-academia .alive-btn:active { background-color: #3e2615 !important; border-color: #5c3a21 !important; }
+
+        /* Midnight Library */
+        body.theme-library h1 { color: #5c9ce6 !important; }
+        body.theme-library #timer { color: #8ab4f8 !important; text-shadow: 0 0 15px rgba(92,156,230,0.9), 2px 2px 5px #000 !important; }
+        body.theme-library .alive-btn { background-color: #1a365d !important; border-color: #2c5282 !important; color: #fff !important; }
+        body.theme-library .alive-btn:active { background-color: #10233f !important; border-color: #1a365d !important; }
+
+        /* Old Crypt */
+        body.theme-crypt h1 { color: #7fbcac !important; }
+        body.theme-crypt #timer { color: #a3d9c9 !important; text-shadow: 0 0 15px rgba(127,188,172,0.9), 2px 2px 5px #000 !important; }
+        body.theme-crypt .alive-btn { background-color: #2f4f4f !important; border-color: #528b8b !important; color: #fff !important; }
+        body.theme-crypt .alive-btn:active { background-color: #1d3333 !important; border-color: #2f4f4f !important; }
+
+        /* Royal Stable */
+        body.theme-stable h1 { color: #b8860b !important; }
+        body.theme-stable #timer { color: #daa520 !important; text-shadow: 0 0 15px rgba(184,134,11,0.9), 2px 2px 5px #000 !important; }
+        body.theme-stable .alive-btn { background-color: #6b4226 !important; border-color: #a0522d !important; color: #fff !important; }
+        body.theme-stable .alive-btn:active { background-color: #4a2d19 !important; border-color: #6b4226 !important; }
+
+        /* Digital Abyss */
+        body.theme-abyss h1 { color: #00ff00 !important; }
+        body.theme-abyss #timer { color: #33ff33 !important; text-shadow: 0 0 15px rgba(0,255,0,0.9), 2px 2px 5px #000 !important; }
+        body.theme-abyss .alive-btn { background-color: #004d00 !important; border-color: #00cc00 !important; color: #fff !important; }
+        body.theme-abyss .alive-btn:active { background-color: #003300 !important; border-color: #009900 !important; }
+
+        /* Neon Street */
+        body.theme-neon h1 { color: #ff00ff !important; }
+        body.theme-neon #timer { color: #ff66ff !important; text-shadow: 0 0 15px rgba(255,0,255,0.9), 2px 2px 5px #000 !important; }
+        body.theme-neon .alive-btn { background-color: #4b0082 !important; border-color: #8a2be2 !important; color: #fff !important; }
+        body.theme-neon .alive-btn:active { background-color: #320057 !important; border-color: #4b0082 !important; }
+
+        /* Glitch Core */
+        body.theme-glitch h1 { color: #ffaa00 !important; text-shadow: -2px 0 red, 2px 0 blue !important; }
+        body.theme-glitch #timer { color: #ffcc00 !important; text-shadow: -3px 0 red, 3px 0 blue, 2px 2px 5px #000 !important; }
+        body.theme-glitch .alive-btn { background-color: #8b4500 !important; border-color: #cd6600 !important; color: #fff !important; }
+        body.theme-glitch .alive-btn:active { background-color: #5c2e00 !important; border-color: #8b4500 !important; }
+
+        /* ========================================= */
+
+        .header { z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 10px; flex-shrink: 0; }
+        .top-buttons { display: flex; gap: 5px; justify-content: center; flex-wrap: wrap; width: 100%; }
+
+        .nav-btn {
+            background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(2px); border: 2px solid #333; color: #aaa;
+            font-family: 'Press Start 2P', monospace; font-size: 8px; padding: 8px; 
+            cursor: pointer; transition: 0.2s; line-height: 1.4; white-space: nowrap;
+        }
+        .nav-btn:hover { color: #fff; border-color: #666; background: rgba(0,0,0,0.9); }
+        .nav-btn.graveyard-btn { border-color: #4a4a4a; color: #888; }
+        .ru-sub { display: block; font-size: 6px; color: #888; margin-top: 4px; }
+
+        .subtitle { font-size: 8px; color: #ccc; margin-top: 5px; text-shadow: 1px 1px 2px #000; }
+        .stats { margin-top: 15px; font-size: 10px; color: #ccc; line-height: 1.5; text-shadow: 1px 1px 3px #000, -1px -1px 3px #000; font-weight: bold;}
+        .highlight { color: #fff; }
+        .player-name { color: #ff3333; }
+
+        .timer-container { flex-grow: 1; display: flex; align-items: center; justify-content: center; z-index: 2; }
+        
+        .button-container { margin-bottom: 15px; z-index: 2; flex-shrink: 0; }
+        .alive-btn {
+            font-family: 'Press Start 2P', monospace;
+            padding: 20px 30px; font-size: 16px; cursor: pointer;
+            box-shadow: inset -4px -4px 0px rgba(0,0,0,0.5), 0 0 15px rgba(0,0,0,0.8); transition: all 0.1s; width: 90%; max-width: 300px;
+        }
+        .alive-btn:active { transform: translateY(4px); }
+
+        .footer { margin-bottom: 5px; z-index: 2; display: flex; justify-content: center; flex-shrink: 0; }
+        .menu-btn { background: none; border: none; color: #aaa; font-family: 'Press Start 2P', monospace; font-size: 10px; text-decoration: underline; cursor: pointer; text-shadow: 1px 1px 2px #000; }
+        .menu-btn:hover { color: #fff; }
+
+        /* Окна (Модалки) */
+        .modal-overlay {
+            display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.95); z-index: 10; flex-direction: column;
+            align-items: center; justify-content: center;
+        }
+        .modal-window { background-color: #111; border: 4px solid #4a0000; width: 90%; max-width: 380px; padding: 15px; box-shadow: 0 0 20px rgba(255, 0, 0, 0.2); max-height: 85vh; overflow-y: auto; }
+        .modal-title { color: #ff3333; font-size: 14px; margin-bottom: 15px; text-shadow: 2px 2px #000; }
+
+        /* --- РЕЙТИНГ --- */
+        .leaderboard-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; }
+        .lb-row { display: flex; align-items: center; justify-content: flex-start; background-color: #1a1a1a; border: 2px solid #333; padding: 10px; text-align: left; }
+        .lb-row.my-row { border-color: #ff3333; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { box-shadow: 0 0 5px #ff3333; } 50% { box-shadow: 0 0 15px #ff3333; } 100% { box-shadow: 0 0 5px #ff3333; } }
+
+        .lb-rank { font-size: 12px; color: #666; width: 45px; flex-shrink: 0; text-align: left; }
+        .lb-avatar { width: 24px; height: 24px; background-color: #000; border: 1px solid #555; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #aaa; margin-right: 15px; flex-shrink: 0; }
+        .lb-info { flex-grow: 1; display: flex; flex-direction: column; gap: 5px; overflow: hidden; }
+        .lb-name { font-size: 10px; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .lb-streak { font-size: 8px; color: #ff3333; }
+
+        /* ПРЕМИАЛЬНЫЕ КАСТОМИЗАЦИИ СТРОК */
+        .lb-row.theme-academia { border-color: #8b0000; background: linear-gradient(90deg, #2a0808, #111); }
+        .lb-row.theme-academia .lb-name::before { content: '📚 '; }
+
+        .lb-row.theme-library { border-color: #4a4a6a; background: linear-gradient(90deg, #1a1a25, #111); }
+        .lb-row.theme-library .lb-name::before { content: '🕯️ '; }
+
+        .lb-row.theme-crypt { border-color: #4a5a4a; background: linear-gradient(90deg, #151a15, #111); border-style: dashed; }
+        .lb-row.theme-crypt .lb-name::before { content: '💀 '; }
+        .lb-row.theme-crypt .lb-name { color: #ccffcc; text-shadow: 0 0 5px #00ff00; }
+
+        .lb-row.theme-stable { border-color: #b8860b; background: linear-gradient(90deg, #2a1505, #111); }
+        .lb-row.theme-stable .lb-name::before { content: '👑 '; }
+        .lb-row.theme-stable .lb-name { color: #ffd700; }
+
+        .lb-row.theme-abyss { border-color: #00ff00; background: linear-gradient(90deg, #001a00, #111); }
+        .lb-row.theme-abyss .lb-name::before { content: '/>_ '; color: #00ff00;}
+        .lb-row.theme-abyss .lb-name { color: #00ff00; text-shadow: 0 0 8px #00ff00; }
+
+        .lb-row.theme-neon { border-color: #ff00ff; background: linear-gradient(90deg, #1a052a, #111); }
+        .lb-row.theme-neon .lb-name::before { content: '⚡ '; }
+        .lb-row.theme-neon .lb-name { color: #ffb3ff; text-shadow: 0 0 8px #ff00ff; }
+
+        .lb-row.theme-glitch { border-color: #ffff00; background: linear-gradient(90deg, #1a1a00, #111); }
+        .lb-row.theme-glitch .lb-name::before { content: '⚠ '; color: #ffff00; }
+        .lb-row.theme-glitch .lb-name { text-shadow: -2px 0 red, 2px 0 blue; }
+
+        .lb-row.dead-row { background-color: #0d0d0d; border-color: #222; opacity: 0.7; }
+        .dead-icon { font-size: 14px; width: 45px; flex-shrink: 0; text-align: left; }
+        .lb-row.dead-row .lb-avatar { border-style: dashed; color: #444; }
+        .lb-row.dead-row .lb-name { color: #666; text-decoration: line-through; }
+        .lb-row.dead-row .lb-streak { color: #444; }
+
+        /* Элементы интерфейса */
+        .avatar-box { width: 64px; height: 64px; background-color: #222; border: 2px solid #555; margin: 0 auto 15px auto; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #666; }
+        .retro-input { background-color: #000; color: #fff; font-family: 'Press Start 2P', monospace; font-size: 10px; border: 2px solid #4a0000; padding: 10px; width: 80%; text-align: center; margin-bottom: 15px; outline: none; }
+        .retro-input:focus { border-color: #ff3333; }
+        
+        .market-item { background-color: #1a1a1a; border: 2px solid #333; padding: 10px; margin-bottom: 10px; text-align: left; }
+        .item-name { color: #fff; font-size: 10px; margin-bottom: 8px; line-height: 1.4; }
+        .action-btn { background-color: #fff; color: #000; font-family: 'Press Start 2P', monospace; border: 2px solid #aaa; padding: 10px; font-size: 10px; cursor: pointer; width: 100%; text-align: center; transition: 0.2s; }
+        .action-btn.buy:hover { background-color: #ff3333; color: #fff; border-color: #ff3333; }
+        .action-btn.equip { background-color: #333; color: #fff; border-color: #555; }
+        .action-btn.equip:hover { background-color: #555; }
+        .action-btn.equipped { background-color: #8b0000; color: #fff; border-color: #ff3333; cursor: default; }
+        
+        .close-modal { background: none; border: none; color: #666; font-family: 'Press Start 2P', monospace; font-size: 10px; margin-top: 10px; cursor: pointer; padding: 10px; }
+        .close-modal:hover { color: #fff; }
+
+        #ghostContainer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+        .ghost-entity { position: absolute; color: #aaa; font-size: 8px; font-family: 'Press Start 2P', monospace; opacity: 0; text-shadow: 0 0 5px rgba(0, 0, 0, 0.8); animation: floatUp 8s linear forwards; }
+        @keyframes floatUp { 0% { transform: translateY(100vh); opacity: 0; } 20% { opacity: 0.5; } 80% { opacity: 0.5; } 100% { transform: translateY(-100px); opacity: 0; } }
+    </style>
+</head>
+<body id="gameBody" class="bg-default">
+
+    <video id="video-background" autoplay loop muted playsinline></video>
+    <div id="video-overlay"></div>
+
+    <div id="ghostContainer"></div>
+
+    <div class="header">
+        <div class="top-buttons">
+            <button class="nav-btn" onclick="openProfile()">[DOSSIER]<span class="ru-sub">(ДОСЬЕ)</span></button>
+            <button class="nav-btn" onclick="openLeaderboard()">[RANK]<span class="ru-sub">(РЕЙТИНГ)</span></button>
+            <button class="nav-btn graveyard-btn" onclick="openGraveyard()">[GRAVEYARD]<span class="ru-sub">(КЛАДБИЩЕ)</span></button>
+        </div>
+        <h1 id="gameTitle">DEADLINE</h1>
+        <div class="subtitle">AN ONLINE GAME OF DISCIPLINE</div>
+        <div class="stats">
+            PLAYER: <span class="highlight player-name" id="displayNickname">UNKNOWN</span><br>
+            CURRENT STREAK: <span class="highlight" id="streak">0</span> DAYS
+        </div>
+    </div>
+
+    <div class="timer-container">
+        <div id="timer">24:00:00</div>
+    </div>
+
+    <div class="button-container">
+        <button class="alive-btn" id="aliveBtn" onclick="pressAlive()">I AM ALIVE</button>
+    </div>
+
+    <div class="footer">
+        <button class="menu-btn" onclick="openMarket()">[BLACK MARKET (ЧЕРНЫЙ РЫНОК)]</button>
+    </div>
+
+    <div class="modal-overlay" id="leaderboardModal">
+        <div class="modal-window">
+            <div class="modal-title">GLOBAL RANKING</div>
+            <div class="leaderboard-list">
+                <div class="lb-row theme-neon">
+                    <span class="lb-rank">#1</span>
+                    <div class="lb-avatar">X</div>
+                    <div class="lb-info"><span class="lb-name">PSYCHO</span><span class="lb-streak">124 DAYS ALIVE</span></div>
+                </div>
+                <div class="lb-row theme-stable">
+                    <span class="lb-rank">#2</span>
+                    <div class="lb-avatar">V</div>
+                    <div class="lb-info"><span class="lb-name">SLEEPLESS</span><span class="lb-streak">98 DAYS ALIVE</span></div>
+                </div>
+                <div style="color: #666; font-size: 10px; margin: 5px 0;">...</div>
+                <div class="lb-row my-row" id="myLeaderboardRow">
+                    <span class="lb-rank">#402</span>
+                    <div class="lb-avatar" id="myLbAvatar">?</div>
+                    <div class="lb-info"><span class="lb-name" id="myLbName">UNKNOWN</span><span class="lb-streak" id="myLbStreak">0 DAYS ALIVE</span></div>
+                </div>
+            </div>
+            <button class="close-modal" onclick="closeLeaderboard()">[CLOSE (ЗАКРЫТЬ)]</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="graveyardModal">
+        <div class="modal-window grave-style">
+            <div class="modal-title grave-title">GRAVEYARD</div>
+            <div style="font-size: 8px; color: #555; margin-bottom: 15px;">REST IN PIECES (ПОКОЙТЕСЬ НА КУСОЧКИ)</div>
+            <div class="leaderboard-list">
+                <div class="lb-row dead-row"><span class="dead-icon">☠️</span><div class="lb-avatar">L</div><div class="lb-info"><span class="lb-name">LOSER_99</span><span class="lb-streak">DIED AT 45 DAYS</span></div></div>
+                <div class="lb-row dead-row"><span class="dead-icon">☠️</span><div class="lb-avatar">A</div><div class="lb-info"><span class="lb-name">ALEX_NOOB</span><span class="lb-streak">DIED AT 12 DAYS</span></div></div>
+                <div class="lb-row dead-row"><span class="dead-icon">☠️</span><div class="lb-avatar">S</div><div class="lb-info"><span class="lb-name">SLEEPY_HEAD</span><span class="lb-streak">DIED AT 2 DAYS</span></div></div>
+            </div>
+            <button class="close-modal" onclick="closeGraveyard()">[CLOSE (ЗАКРЫТЬ)]</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="marketModal">
+        <div class="modal-window">
+            <div class="modal-title">BLACK MARKET</div>
+            <div style="font-size: 8px; color: #888; margin-bottom: 15px;">CATEGORY: CLASSIC & DARK</div>
+            
+            <div class="market-item">
+                <div class="item-name">DARK ACADEMIA</div>
+                <button class="action-btn buy skin-btn" onclick="handleItemClick(this, 'academia')">BUY (КУПИТЬ) - $7.90</button>
+            </div>
+            <div class="market-item">
+                <div class="item-name">MIDNIGHT LIBRARY</div>
+                <button class="action-btn buy skin-btn" onclick="handleItemClick(this, 'library')">BUY (КУПИТЬ) - $8.90</button>
+            </div>
+            <div class="market-item">
+                <div class="item-name">OLD CRYPT</div>
+                <button class="action-btn buy skin-btn" onclick="handleItemClick(this, 'crypt')">BUY (КУПИТЬ) - $7.90</button>
+            </div>
+            <div class="market-item">
+                <div class="item-name">ROYAL STABLE</div>
+                <button class="action-btn buy skin-btn" onclick="handleItemClick(this, 'stable')">BUY (КУПИТЬ) - $9.90</button>
+            </div>
+
+            <div style="font-size: 8px; color: #888; margin: 20px 0 15px 0;">CATEGORY: TECH & NEON</div>
+
+            <div class="market-item">
+                <div class="item-name">DIGITAL ABYSS</div>
+                <button class="action-btn buy skin-btn" onclick="handleItemClick(this, 'abyss')">BUY (КУПИТЬ) - $6.90</button>
+            </div>
+            <div class="market-item">
+                <div class="item-name">NEON STREET</div>
+                <button class="action-btn buy skin-btn" onclick="handleItemClick(this, 'neon')">BUY (КУПИТЬ) - $7.90</button>
+            </div>
+            <div class="market-item">
+                <div class="item-name">GLITCH CORE</div>
+                <button class="action-btn buy skin-btn" onclick="handleItemClick(this, 'glitch')">BUY (КУПИТЬ) - $8.90</button>
+            </div>
+
+            <button class="close-modal" onclick="closeMarket()">[CLOSE (ЗАКРЫТЬ)]</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="profileModal">
+        <div class="modal-window">
+            <div class="modal-title">DOSSIER (ДОСЬЕ)</div>
+            <div class="avatar-box" id="avatarPreview">?</div>
+            <input type="text" id="nicknameInput" class="retro-input" placeholder="ENTER NAME" maxlength="10">
+            <button class="action-btn buy" onclick="saveProfile()" style="margin-bottom: 10px;">SAVE DATA (СОХРАНИТЬ)</button>
+            <button class="close-modal" onclick="closeProfile()">[CLOSE (ЗАКРЫТЬ)]</button>
+        </div>
+    </div>
+
+    <script>
+        let timeLeft = 24 * 60 * 60; 
+        let streak = 0;
+        let playerName = "UNKNOWN";
+
+        // --- ЛОГИКА ФОНОВЫХ ВИДЕО ---
+        const videoFiles = {
+            'academia': 'academia.mp4',
+            'library': 'library.mp4',
+            'crypt': 'crypt.mp4',
+            'stable': 'stable.mp4',
+            'abyss': 'abyss.mp4',
+            'neon': 'neon.mp4',
+            'glitch': 'glitch.mp4'
+        };
+
+        function updateTimerDisplay() {
+            let h = Math.floor(timeLeft / 3600);
+            let m = Math.floor((timeLeft % 3600) / 60);
+            let s = timeLeft % 60;
+            h = h < 10 ? "0" + h : h;
+            m = m < 10 ? "0" + m : m;
+            s = s < 10 ? "0" + s : s;
+            document.getElementById("timer").innerText = `${h}:${m}:${s}`;
+        }
+
+        setInterval(() => { timeLeft--; updateTimerDisplay(); }, 1000); 
+
+        function pressAlive() {
+            timeLeft = 24 * 60 * 60;
+            streak++;
+            document.getElementById("streak").innerText = streak;
+            document.getElementById("myLbStreak").innerText = `${streak} DAYS ALIVE`;
+            updateTimerDisplay();
+            
+            let timerEl = document.getElementById("timer");
+            timerEl.style.color = "#fff";
+            setTimeout(() => { timerEl.style.color = ""; }, 200);
+        }
+
+        function openMarket() { document.getElementById("marketModal").style.display = "flex"; }
+        function closeMarket() { document.getElementById("marketModal").style.display = "none"; }
+        function openProfile() { document.getElementById("profileModal").style.display = "flex"; }
+        function closeProfile() { document.getElementById("profileModal").style.display = "none"; }
+        function openLeaderboard() { document.getElementById("leaderboardModal").style.display = "flex"; }
+        function closeLeaderboard() { document.getElementById("leaderboardModal").style.display = "none"; }
+        function openGraveyard() { document.getElementById("graveyardModal").style.display = "flex"; }
+        function closeGraveyard() { document.getElementById("graveyardModal").style.display = "none"; }
+
+        function handleItemClick(button, themeKey) {
+            if (button.classList.contains("buy")) {
+                button.classList.remove("buy");
+                button.classList.add("equip");
+                button.innerText = "EQUIP (НАДЕТЬ)";
+            } else if (button.classList.contains("equip")) {
+                let allSkinBtns = document.querySelectorAll(".skin-btn.equipped");
+                allSkinBtns.forEach(btn => {
+                    btn.classList.remove("equipped");
+                    btn.classList.add("equip");
+                    btn.innerText = "EQUIP (НАДЕТЬ)";
+                });
+                button.classList.remove("equip");
+                button.classList.add("equipped");
+                button.innerText = "EQUIPPED";
+                
+                // Переключаем классы цвета для текста/кнопок
+                document.getElementById("gameBody").className = `theme-${themeKey}`;
+                document.getElementById("myLeaderboardRow").className = `lb-row my-row theme-${themeKey}`;
+
+                // --- ЗАГРУЗКА ВИДЕО В ЗАВИСИМОСТИ ОТ УСТРОЙСТВА ---
+                let videoPlayer = document.getElementById("video-background");
+                let isPC = window.innerWidth > 768; 
+                let folder = isPC ? "Backgrounds/PC/" : "Backgrounds/Phone/";
+                
+                videoPlayer.src = folder + videoFiles[themeKey];
+                videoPlayer.style.display = "block";
+                document.getElementById("video-overlay").style.display = "block";
+                
+                // Чтобы видео точно заиграло (браузеры любят блокировать автоплей)
+                videoPlayer.load();
+                videoPlayer.play().catch(e => console.log("Autoplay blocked, waiting for interaction"));
+
+                setTimeout(() => {
+                    closeMarket();
+                }, 300); 
+            }
+        }
+
+        function saveProfile() {
+            let newName = document.getElementById("nicknameInput").value.trim().toUpperCase();
+            if (newName !== "") {
+                playerName = newName;
+                document.getElementById("displayNickname").innerText = playerName;
+                document.getElementById("myLbName").innerText = playerName;
+                document.getElementById("myLbAvatar").innerText = playerName.charAt(0);
+                document.getElementById("avatarPreview").innerText = playerName.charAt(0);
+            }
+            closeProfile();
+        }
+
+        const deadNames = ["LOSER_99", "ALEX_NOOB", "SLEEPY_HEAD", "TOO_SLOW", "FORGOT_IT", "LAZY_BONE"];
+        
+        function spawnGhost() {
+            let ghostContainer = document.getElementById("ghostContainer");
+            let ghost = document.createElement("div");
+            ghost.className = "ghost-entity";
+            
+            let randomName = deadNames[Math.floor(Math.random() * deadNames.length)];
+            let randomDays = Math.floor(Math.random() * 80) + 1;
+            
+            ghost.innerText = `👻 ${randomName} (DIED AT ${randomDays} DAYS)`;
+            
+            let randomX = Math.floor(Math.random() * 65) + 5;
+            ghost.style.left = `${randomX}%`;
+            
+            ghostContainer.appendChild(ghost);
+            setTimeout(() => { ghost.remove(); }, 8000);
+        }
+
+        setInterval(spawnGhost, Math.random() * 6000 + 6000);
+        updateTimerDisplay();
+    </script>
+</body>
+</html>
