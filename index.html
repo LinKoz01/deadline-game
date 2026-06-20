@@ -790,6 +790,38 @@
             }
             closeProfile();
         }
+
+        // --- СИСТЕМА ПРИЗРАКОВ ---
+        const deadNicknames = ["LOSER_99", "ALEX_NOOB", "SLEEPY_HEAD", "FORGOT_TO_CLICK", "LAZY_BONE", "TOO_SLOW", "RAGE_QUIT"];
+        
+        function spawnGhost() {
+            const container = document.getElementById('ghostContainer');
+            // Не спавним призраков, если игра свернута или открыты модальные окна (чтобы не перегружать)
+            if (!container || document.hidden) return; 
+
+            const ghost = document.createElement('div');
+            ghost.className = 'ghost-entity';
+            
+            // Рандомное имя из списка выбывших
+            const randomName = deadNicknames[Math.floor(Math.random() * deadNicknames.length)];
+            ghost.innerText = randomName;
+            
+            // Рандомная позиция по горизонтали (от 10% до 90% ширины экрана)
+            const randomX = Math.floor(Math.random() * 80) + 10;
+            ghost.style.left = randomX + '%';
+            
+            container.appendChild(ghost);
+
+            // Удаляем элемент после завершения анимации (8 секунд, как прописано в CSS)
+            setTimeout(() => {
+                if (container.contains(ghost)) {
+                    ghost.remove();
+                }
+            }, 8000);
+        }
+
+        // Спавним новую душу каждые 6 секунд
+        setInterval(spawnGhost, 6000);
     </script>
 </body>
 </html>
