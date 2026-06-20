@@ -9,17 +9,17 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     
     <style>
-        /* ЯДЕРНОЕ ЛОКАЛЬНОЕ ПОДКЛЮЧЕНИЕ ШРИФТА */
+        /* ВЗЛОМ КЭША: добавлено ?v=666, чтобы заставить Samsung скачать файл заново */
         @font-face {
             font-family: 'PixelFont';
-            src: url('fonts/pixel.ttf') format('truetype');
+            src: url('fonts/pixel.ttf?v=666') format('truetype');
             font-weight: normal;
             font-style: normal;
             font-display: swap;
         }
 
-        /* ЖЕСТКИЙ ЗАПРЕТ БРАУЗЕРАМ МЕНЯТЬ ШРИФТ */
-        * {
+        /* ЖЕСТКОЕ ПРИМЕНЕНИЕ КО ВСЕМ ЭЛЕМЕНТАМ (Samsung иногда игнорирует *) */
+        body, button, input, div, span, h1, .modal-title, .ob-text, .item-name, .lb-name, .action-btn {
             font-family: 'PixelFont', 'Courier New', Courier, monospace !important;
         }
 
