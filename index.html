@@ -81,12 +81,13 @@
         .lb-avatar { width: 24px; height: 24px; background-color: #000; border: 1px solid #555; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #aaa; margin-right: 15px; flex-shrink: 0; overflow: hidden; }
         .avatar-box { width: 64px; height: 64px; background-color: #222; border: 2px solid #555; margin: 0 auto 15px auto; display: flex; align-items: center; justify-content: center; font-size: 32px; color: #666; }
         
-        /* СТИЛИ ДЛЯ ВЫБОРА АВАТАРОК */
+        /* СТИЛИ ДЛЯ ВЫБОРА АВАТАРОК В ДОСЬЕ */
         .avatar-selector { display: flex; gap: 10px; overflow-x: auto; padding: 10px 5px; margin-bottom: 15px; border: 1px solid #333; background: #050505; }
         .avatar-selector::-webkit-scrollbar { height: 4px; } .avatar-selector::-webkit-scrollbar-thumb { background: #ff3333; }
         .avatar-option { width: 45px; height: 45px; flex-shrink: 0; background: #1a1a1a; border: 2px solid #333; display: flex; align-items: center; justify-content: center; font-size: 24px; cursor: pointer; transition: 0.2s; position: relative; }
         .avatar-option.unlocked:hover { border-color: #666; }
         .avatar-option.selected { border-color: #ff3333; background: #2a0000; box-shadow: 0 0 10px rgba(255,51,51,0.5); }
+        /* Делаем заблокированные серыми и вешаем замочек */
         .avatar-option.locked { opacity: 0.4; filter: grayscale(100%); }
         .avatar-option.locked::after { content: '🔒'; position: absolute; font-size: 10px; bottom: 2px; right: 2px; opacity: 1; filter: none; }
 
@@ -215,17 +216,22 @@
         </div>
     </div>
 
-    <!-- Модалка Покупки Аватара -->
+    <!-- Модалка Покупки Аватара (НОВОЕ ЧИСТОЕ ПРЕВЬЮ!) -->
     <div class="modal-overlay" id="purchaseAvatarModal" style="z-index: 10001;">
         <div class="modal-window" style="max-width: 280px; border-color: #ffd700;">
             <div class="modal-title" style="color: #ffd700;">UNLOCK IDENTITY</div>
-            <div id="purchaseAvatarIcon" style="font-size: 48px; margin: 20px 0;">💀</div>
-            <div id="purchaseAvatarName" style="font-size: 12px; color: #fff; margin-bottom: 15px; text-shadow: 1px 1px 2px #000;">THE SKULL</div>
-            <div style="font-size: 8px; color: #aaa; margin-bottom: 25px; line-height: 1.5;">
+            
+            <!-- ПРЕВЬЮ ПОКУПКИ (БЕЗ ЗАМОЧКА И ФИЛЬТРОВ) -->
+            <div style="background: #000; border: 2px solid #ffd700; width: 80px; height: 80px; margin: 15px auto; display: flex; align-items: center; justify-content: center; font-size: 48px; border-radius: 10px; box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);">
+                <span id="purchaseAvatarIcon">💀</span>
+            </div>
+            
+            <div id="purchaseAvatarName" style="font-size: 12px; color: #fff; margin-bottom: 10px; text-shadow: 1px 1px 2px #000;">THE SKULL</div>
+            <div style="font-size: 8px; color: #aaa; margin-bottom: 20px; line-height: 1.5;">
                 ACQUIRE THIS IDENTITY FOR <br><span style="color:#00ff00; font-size: 10px;">$<span id="purchaseAvatarPrice">0.99</span></span>?
             </div>
             
-            <button class="action-btn buy" onclick="confirmAvatarPurchase()" style="margin-bottom: 10px;">BUY NOW (КУПИТЬ)</button>
+            <button class="action-btn buy" onclick="confirmAvatarPurchase()" style="margin-bottom: 10px; background: #ffd700; color: #000; border: none; text-shadow: none; font-weight: bold;">BUY NOW (КУПИТЬ)</button>
             <button class="close-modal" onclick="closePurchaseAvatar()">[CANCEL (ОТМЕНА)]</button>
         </div>
     </div>
@@ -332,7 +338,7 @@
         document.getElementById("displayNickname").innerText = playerName;
         document.getElementById("myLbName").innerText = playerName;
 
-        // --- НОВАЯ ЛОГИКА АВАТАРОВ ---
+        // --- ЛОГИКА АВАТАРОВ ---
         const availableAvatars = [
             { emoji: "👤", price: 0, name: "CLASSIC", isFree: true },
             { emoji: "🐱", price: 0, name: "STREET CAT", isFree: true },
@@ -372,9 +378,9 @@
                         currentAvatar = av.emoji;
                         localStorage.setItem("playerAvatar", currentAvatar);
                         updateAvatarUI();
-                        renderAvatarSelector(); // Обновляем подсветку
+                        renderAvatarSelector(); 
                     } else {
-                        // Открываем окно покупки
+                        // Передаем в превью чистую иконку (без замка)
                         pendingPurchaseAvatar = av.emoji;
                         pendingPurchasePrice = av.price;
                         pendingPurchaseName = av.name;
@@ -392,11 +398,9 @@
         function confirmAvatarPurchase() {
             alert(`TG Payments Init... (Имитация покупки за $${pendingPurchasePrice})`);
             
-            // Добавляем в разблокированные
             unlockedAvatars.push(pendingPurchaseAvatar);
             localStorage.setItem("unlockedAvatars", JSON.stringify(unlockedAvatars));
             
-            // Автоматически надеваем
             currentAvatar = pendingPurchaseAvatar;
             localStorage.setItem("playerAvatar", currentAvatar);
             
