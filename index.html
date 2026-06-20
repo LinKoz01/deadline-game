@@ -51,7 +51,6 @@
         .global-stats { margin-top: 8px; font-size: 8px; color: #888; text-shadow: 1px 1px 2px #000; background: rgba(0,0,0,0.5); padding: 5px 10px; border: 1px solid #333; border-radius: 3px; }
         .stat-alive { color: #00ff00; } .stat-dead { color: #ff3333; }
 
-        /* ИЗМЕНЕННАЯ СЕТКА: Таймер выше, Кнопка по центру, Футер выше */
         .timer-container { flex-grow: 0; margin-top: 5vh; display: flex; align-items: center; justify-content: center; z-index: 2; }
         .button-container { flex-grow: 1; display: flex; align-items: center; justify-content: center; z-index: 2; flex-shrink: 0; }
         .alive-btn { font-family: 'Press Start 2P', monospace; padding: 20px 30px; font-size: 16px; cursor: pointer; box-shadow: inset -4px -4px 0px rgba(0,0,0,0.5), 0 0 15px rgba(0,0,0,0.8); transition: all 0.1s; width: 90%; max-width: 300px; }
@@ -67,7 +66,7 @@
         .modal-window::-webkit-scrollbar { width: 5px; } .modal-window::-webkit-scrollbar-thumb { background: #4a0000; }
         .modal-title { color: #ff3333; font-size: 14px; margin-bottom: 15px; text-shadow: 2px 2px #000; }
 
-        /* ОНБОРДИНГ АНИМАЦИИ И СТИЛИ */
+        /* ОНБОРДИНГ */
         @keyframes blink-arrow { 0%, 100% { opacity: 1; transform: translateY(0); } 50% { opacity: 0.3; transform: translateY(5px); } }
         .blinking-arrow { font-size: 24px; color: #ff3333; animation: blink-arrow 1.5s infinite; cursor: pointer; border: none; background: none; font-family: 'Press Start 2P', monospace; margin: 20px auto 10px auto; display: block; }
         .ob-text { font-size: 8px; color: #ccc; line-height: 2; text-align: left; margin: 20px 0; background: #1a1a1a; padding: 15px; border: 1px dashed #333; }
@@ -85,10 +84,10 @@
         @keyframes pulse { 0% { box-shadow: 0 0 5px #ff3333; } 50% { box-shadow: 0 0 15px #ff3333; } 100% { box-shadow: 0 0 5px #ff3333; } }
         
         /* VIP PREMIUM РАМКА */
-        .lb-row.vip-row { border-color: #ffd700; background: linear-gradient(90deg, #2a2000, #111); animation: vipPulse 2s infinite; }
+        .lb-row.vip-row { border-color: #ffd700 !important; background: linear-gradient(90deg, #2a2000, #111) !important; animation: vipPulse 2s infinite !important; }
         @keyframes vipPulse { 0% { box-shadow: 0 0 5px rgba(255, 215, 0, 0.4); } 50% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.8); } 100% { box-shadow: 0 0 5px rgba(255, 215, 0, 0.4); } }
-        .lb-row.vip-row .lb-name { color: #ffd700; text-shadow: 0 0 5px rgba(255, 215, 0, 0.5); }
-        .lb-row.vip-row .lb-name::after { content: ' 👑'; }
+        .lb-row.vip-row .lb-name { color: #ffd700 !important; text-shadow: 0 0 5px rgba(255, 215, 0, 0.5) !important; }
+        .lb-row.vip-row .lb-name::after { content: ' 👑' !important; }
 
         .lb-rank { font-size: 12px; color: #666; width: 45px; flex-shrink: 0; text-align: left; }
         
@@ -297,7 +296,7 @@
             <div class="modal-title">BLACK MARKET</div>
 
             <div style="font-size: 8px; color: #888; margin: 0 0 15px 0;">SERVICES: SURVIVAL & CHEATS</div>
-            <div class="market-item"><div class="item-name" style="color: #ffd700;">PREMIUM: DAILY ALARM</div><div class="item-desc">3 ALERTS BEFORE DEATH (12H, 3H, 15M) + EXCLUSIVE GOLD NAME & BORDER IN GLOBAL RANKING</div><button class="action-btn buy" onclick="alert('TG Payments Init...')">SUBSCRIBE - $3.90/MO</button></div>
+            <div class="market-item"><div class="item-name" style="color: #ffd700;">PREMIUM: SURVIVAL KIT</div><div class="item-desc">3 ALERTS BEFORE DEATH (12H, 3H, 15M) + EXCLUSIVE GOLD NAME & BORDER IN GLOBAL RANKING</div><button id="btn-premium" class="action-btn buy" onclick="buyPremium()">SUBSCRIBE - $3.90/MO</button></div>
             <div class="market-item"><div class="item-name" style="color: #ff3333;">DEFIBRILLATOR (MAX 5)</div><div class="item-desc">FORGOT TO CLICK? REVIVE A LOST STREAK.</div><button class="action-btn buy" onclick="buyDefibrillator(false)">BUY CHEAT - $9.90</button></div>
 
             <div style="font-size: 8px; color: #888; margin: 25px 0 15px 0;">CATEGORY: CLASSIC & DARK</div>
@@ -432,6 +431,31 @@
         document.getElementById("displayNickname").innerText = playerName;
         document.getElementById("myLbName").innerText = playerName;
 
+        // --- ЛОГИКА ПРЕМИУМ ПОДПИСКИ ---
+        let isPremium = localStorage.getItem("isPremium") === "true";
+
+        function updatePremiumUI() {
+            let btn = document.getElementById("btn-premium");
+            if (btn && isPremium) {
+                btn.className = "action-btn equipped";
+                btn.innerText = "ACTIVE (АКТИВНА)";
+            }
+            
+            // Добавляем золотую VIP рамку к строке игрока
+            let myRow = document.getElementById("myLeaderboardRow");
+            if (myRow && isPremium) {
+                myRow.classList.add("vip-row");
+            }
+        }
+
+        function buyPremium() {
+            if (isPremium) return;
+            alert('TG Payments Init... (Имитация оформления подписки)');
+            isPremium = true;
+            localStorage.setItem("isPremium", "true");
+            updatePremiumUI();
+        }
+
         // --- БАЗА ДАННЫХ АВАТАРОК ---
         const availableAvatars = [
             { filename: "classic.png", price: 0, name: "CLASSIC", isFree: true },
@@ -527,7 +551,11 @@
 
         function applyThemeBackground(themeKey) {
             document.getElementById("gameBody").className = `theme-${themeKey}`;
-            document.getElementById("myLeaderboardRow").className = `lb-row my-row theme-${themeKey}`;
+            let myRow = document.getElementById("myLeaderboardRow");
+            myRow.className = `lb-row my-row theme-${themeKey}`;
+            // Возвращаем рамку премиума, если она была сброшена
+            if (isPremium) { myRow.classList.add("vip-row"); }
+            
             let videoPlayer = document.getElementById("video-background"); 
             let isPC = window.innerWidth > 768; 
             let folder = isPC ? "Backgrounds/PC/" : "Backgrounds/Phone/";
@@ -540,7 +568,10 @@
 
         function removeThemeBackground() {
             document.getElementById("gameBody").className = "bg-default";
-            document.getElementById("myLeaderboardRow").className = "lb-row my-row";
+            let myRow = document.getElementById("myLeaderboardRow");
+            myRow.className = "lb-row my-row";
+            if (isPremium) { myRow.classList.add("vip-row"); }
+
             document.getElementById("video-background").style.display = "none";
             document.getElementById("video-background").pause();
             document.getElementById("video-overlay").style.display = "none";
@@ -599,6 +630,7 @@
         updateAvatarUI(); 
         renderAvatarSelector();
         initThemes();
+        updatePremiumUI();
 
         let defibrillators = parseInt(localStorage.getItem("defibCount")) || 0;
         document.getElementById("defibDisplay").innerText = defibrillators;
