@@ -9,18 +9,23 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     
     <style>
-        /* ЛОКАЛЬНОЕ ПОДКЛЮЧЕНИЕ ЕДИНОГО ШРИФТА (Защита от блокировщиков Samsung и 100% русский язык) */
+        /* ЯДЕРНОЕ ЛОКАЛЬНОЕ ПОДКЛЮЧЕНИЕ ШРИФТА */
         @font-face {
-            font-family: 'Press Start 2P';
-            src: url('Fonts/PressStart2P-Regular.ttf') format('truetype');
-            font-weight: 400;
+            font-family: 'PixelFont';
+            src: url('fonts/pixel.ttf') format('truetype');
+            font-weight: normal;
             font-style: normal;
             font-display: swap;
         }
 
+        /* ЖЕСТКИЙ ЗАПРЕТ БРАУЗЕРАМ МЕНЯТЬ ШРИФТ */
+        * {
+            font-family: 'PixelFont', 'Courier New', Courier, monospace !important;
+        }
+
         body {
             background-color: #0a0a0a; color: #e0e0e0;
-            font-family: 'Press Start 2P', 'Courier New', Courier, monospace; text-align: center;
+            text-align: center;
             margin: 0; padding: 20px 10px; box-sizing: border-box; 
             display: flex; flex-direction: column; 
             height: var(--tg-viewport-height, 100dvh); 
@@ -48,7 +53,7 @@
         /* Интерфейс */
         .header { z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 10px; flex-shrink: 0; }
         .top-buttons { display: flex; gap: 5px; justify-content: center; flex-wrap: wrap; width: 100%; }
-        .nav-btn { background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(2px); border: 2px solid #333; color: #aaa; font-family: 'Press Start 2P', monospace; font-size: 8px; padding: 8px; cursor: pointer; transition: 0.2s; }
+        .nav-btn { background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(2px); border: 2px solid #333; color: #aaa; font-size: 8px; padding: 8px; cursor: pointer; transition: 0.2s; }
         .nav-btn:hover { color: #fff; border-color: #666; background: rgba(0,0,0,0.9); }
         .nav-btn.friends-btn { border-color: #1a365d; color: #8ab4f8; } .nav-btn.friends-btn:hover { border-color: #5c9ce6; color: #fff; }
         .nav-btn.graveyard-btn { border-color: #4a4a4a; color: #888; }
@@ -65,11 +70,11 @@
 
         .timer-container { flex-grow: 0; margin-top: 5vh; display: flex; align-items: center; justify-content: center; z-index: 2; }
         .button-container { flex-grow: 1; display: flex; align-items: center; justify-content: center; z-index: 2; flex-shrink: 0; }
-        .alive-btn { font-family: 'Press Start 2P', monospace; padding: 20px 30px; font-size: 16px; cursor: pointer; box-shadow: inset -4px -4px 0px rgba(0,0,0,0.5), 0 0 15px rgba(0,0,0,0.8); transition: all 0.1s; width: 90%; max-width: 300px; }
+        .alive-btn { padding: 20px 30px; font-size: 16px; cursor: pointer; box-shadow: inset -4px -4px 0px rgba(0,0,0,0.5), 0 0 15px rgba(0,0,0,0.8); transition: all 0.1s; width: 90%; max-width: 300px; }
         .alive-btn:active { transform: translateY(4px); }
         .footer { margin-bottom: 10vh; z-index: 2; display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; flex-shrink: 0; }
 
-        .menu-btn { background: none; border: none; color: #aaa; font-family: 'Press Start 2P', monospace; font-size: 10px; text-decoration: underline; cursor: pointer; text-shadow: 1px 1px 2px #000; }
+        .menu-btn { background: none; border: none; color: #aaa; font-size: 10px; text-decoration: underline; cursor: pointer; text-shadow: 1px 1px 2px #000; }
         .menu-btn:hover { color: #fff; }
 
         /* Окна */
@@ -85,7 +90,7 @@
 
         /* ОНБОРДИНГ */
         @keyframes blink-arrow { 0%, 100% { opacity: 1; transform: translateY(0); } 50% { opacity: 0.3; transform: translateY(5px); } }
-        .blinking-arrow { font-size: 24px; color: #ff3333; animation: blink-arrow 1.5s infinite; cursor: pointer; border: none; background: none; font-family: 'Press Start 2P', monospace; margin: 20px auto 10px auto; display: block; }
+        .blinking-arrow { font-size: 24px; color: #ff3333; animation: blink-arrow 1.5s infinite; cursor: pointer; border: none; background: none; margin: 20px auto 10px auto; display: block; }
         .ob-text { font-size: 8px; color: #ccc; line-height: 2; text-align: left; margin: 20px 0; background: #1a1a1a; padding: 15px; border: 1px dashed #333; }
         .ob-text span { color: #ff3333; }
 
@@ -163,25 +168,25 @@
         
         .lb-row.dead-row { background-color: #0d0d0d; border-color: #222; opacity: 0.7; } .lb-row.dead-row .lb-avatar { border-style: dashed; color: #444; } .lb-row.dead-row .lb-name { color: #666; text-decoration: line-through; } .lb-row.dead-row .lb-streak { color: #444; }
 
-        .retro-input { background-color: #000; color: #fff; font-family: 'Press Start 2P', monospace; font-size: 10px; border: 2px solid #4a0000; padding: 10px; width: 80%; text-align: center; margin: 0 auto 15px auto; display: block; outline: none; flex-shrink: 0; box-sizing: border-box; }
+        .retro-input { background-color: #000; color: #fff; font-size: 10px; border: 2px solid #4a0000; padding: 10px; width: 80%; text-align: center; margin: 0 auto 15px auto; display: block; outline: none; flex-shrink: 0; box-sizing: border-box; }
         .retro-input:focus { border-color: #ff3333; }
         
         .market-item { background-color: #1a1a1a; border: 2px solid #333; padding: 10px; margin-bottom: 10px; text-align: left; flex-shrink: 0; }
         .item-name { color: #fff; font-size: 10px; margin-bottom: 6px; line-height: 1.4; }
         .item-desc { font-size: 6px; color: #888; margin-bottom: 10px; line-height: 1.4; }
         
-        .action-btn { background-color: #fff; color: #000; font-family: 'Press Start 2P', monospace; border: 2px solid #aaa; padding: 10px; font-size: 10px; cursor: pointer; width: 100%; text-align: center; transition: 0.2s; flex-shrink: 0; }
+        .action-btn { background-color: #fff; color: #000; font-size: 10px; border: 2px solid #aaa; padding: 10px; cursor: pointer; width: 100%; text-align: center; transition: 0.2s; flex-shrink: 0; }
         .action-btn.buy:hover { background-color: #ff3333; color: #fff; border-color: #ff3333; }
         .action-btn.equip { background-color: #333; color: #fff; border-color: #555; }
         .action-btn.equip:hover { background-color: #555; }
         .action-btn.equipped { background-color: #8b0000; color: #fff; border-color: #ff3333; cursor: default; }
         
-        .close-modal { background: none; border: none; color: #666; font-family: 'Press Start 2P', monospace; font-size: 10px; margin-top: 10px; cursor: pointer; padding: 10px; flex-shrink: 0; }
+        .close-modal { background: none; border: none; color: #666; font-size: 10px; margin-top: 10px; cursor: pointer; padding: 10px; flex-shrink: 0; }
         .close-modal:hover { color: #fff; }
         .recruit-list { text-align: left; font-size: 8px; color: #aaa; margin-bottom: 20px; line-height: 2; background: #111; padding: 10px; border: 1px dashed #444; }
         .recruit-active { color: #00ff00; } .recruit-pending { color: #555; }
         #ghostContainer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
-        .ghost-entity { position: absolute; color: #aaa; font-size: 8px; font-family: 'Press Start 2P', monospace; opacity: 0; text-shadow: 0 0 5px rgba(0, 0, 0, 0.8); animation: floatUp 8s linear forwards; }
+        .ghost-entity { position: absolute; color: #aaa; font-size: 8px; opacity: 0; text-shadow: 0 0 5px rgba(0, 0, 0, 0.8); animation: floatUp 8s linear forwards; }
         @keyframes floatUp { 0% { transform: translateY(100vh); opacity: 0; } 20% { opacity: 0.5; } 80% { opacity: 0.5; } 100% { transform: translateY(-100px); opacity: 0; } }
     </style>
 </head>
