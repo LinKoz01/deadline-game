@@ -83,6 +83,13 @@
         .lb-row { display: flex; align-items: center; justify-content: flex-start; background-color: #1a1a1a; border: 2px solid #333; padding: 10px; text-align: left; }
         .lb-row.my-row { border-color: #ff3333; animation: pulse 2s infinite; }
         @keyframes pulse { 0% { box-shadow: 0 0 5px #ff3333; } 50% { box-shadow: 0 0 15px #ff3333; } 100% { box-shadow: 0 0 5px #ff3333; } }
+        
+        /* VIP PREMIUM РАМКА */
+        .lb-row.vip-row { border-color: #ffd700; background: linear-gradient(90deg, #2a2000, #111); animation: vipPulse 2s infinite; }
+        @keyframes vipPulse { 0% { box-shadow: 0 0 5px rgba(255, 215, 0, 0.4); } 50% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.8); } 100% { box-shadow: 0 0 5px rgba(255, 215, 0, 0.4); } }
+        .lb-row.vip-row .lb-name { color: #ffd700; text-shadow: 0 0 5px rgba(255, 215, 0, 0.5); }
+        .lb-row.vip-row .lb-name::after { content: ' 👑'; }
+
         .lb-rank { font-size: 12px; color: #666; width: 45px; flex-shrink: 0; text-align: left; }
         
         .lb-avatar { width: 24px; height: 24px; background-color: #000; border: 1px solid #555; display: flex; align-items: center; justify-content: center; margin-right: 15px; flex-shrink: 0; overflow: hidden; font-size: 12px; }
@@ -173,9 +180,11 @@
         <button class="menu-btn" style="color:#ff3333;" onclick="openInvite()">[BLOOD PACT (ПРИГЛАСИТЬ)]</button>
     </div>
 
+    <!-- МОДАЛКА ПЕРВОГО ЗАПУСКА (ONBOARDING) -->
     <div class="modal-overlay" id="onboardingModal" style="z-index: 100000; background-color: #050505;">
         <div class="modal-window" style="border-color: #333; max-width: 320px;">
             
+            <!-- ШАГ 1: ЯЗЫК -->
             <div id="ob-step-1">
                 <div class="modal-title" style="color: #fff;">SYSTEM BOOT...</div>
                 <div style="font-size: 8px; color: #888; margin-bottom: 25px;">SELECT YOUR REGION:</div>
@@ -183,6 +192,7 @@
                 <button class="action-btn buy" onclick="selectLang('ru')" style="background: #111; color: #fff; border-color: #555;">[ РУССКИЙ ]</button>
             </div>
 
+            <!-- ШАГ 2: ПРИВЕТСТВИЕ -->
             <div id="ob-step-2" style="display: none;">
                 <div class="modal-title" id="ob-title-welcome" style="color: #ff3333; font-size: 16px;">WELCOME TO DEADLINE</div>
                 <div style="font-size: 10px; color: #aaa; line-height: 1.8; margin-top: 20px;" id="ob-text-welcome">
@@ -191,6 +201,7 @@
                 <button class="blinking-arrow" onclick="nextObStep(3)">[ ↓ ]</button>
             </div>
 
+            <!-- ШАГ 3: ИНСТРУКЦИЯ -->
             <div id="ob-step-3" style="display: none;">
                 <div class="modal-title" id="ob-title-rules" style="color: #ff3333;">THE RULES</div>
                 <div class="ob-text" id="ob-text-rules">
@@ -205,6 +216,7 @@
         </div>
     </div>
 
+    <!-- ЭКРАН СМЕРТИ -->
     <div class="modal-overlay" id="deathModal" style="z-index: 9999; background-color: rgba(10, 0, 0, 0.98);">
         <div class="modal-window">
             <div class="modal-title">YOU ARE DEAD</div>
@@ -227,6 +239,7 @@
         </div>
     </div>
 
+    <!-- Модалка Профиля (ДОСЬЕ) -->
     <div class="modal-overlay" id="profileModal">
         <div class="modal-window">
             <div class="modal-title">DOSSIER (ДОСЬЕ)</div>
@@ -249,6 +262,7 @@
         </div>
     </div>
 
+    <!-- Модалка Покупки Аватара -->
     <div class="modal-overlay" id="purchaseAvatarModal" style="z-index: 10001;">
         <div class="modal-window" style="max-width: 280px; border-color: #ffd700;">
             <div class="modal-title" style="color: #ffd700;">UNLOCK IDENTITY</div>
@@ -264,6 +278,7 @@
         </div>
     </div>
 
+    <!-- Окно превью для Темы (фона) -->
     <div class="modal-overlay" id="themePreviewModal" style="z-index: 10002; background-color: rgba(0, 0, 0, 0.4); backdrop-filter: blur(2px);">
         <div class="modal-window" style="border-color: #ffd700; background-color: rgba(17, 17, 17, 0.9);">
             <div class="modal-title" style="color: #ffd700;">THEME PREVIEW</div>
@@ -276,12 +291,13 @@
         </div>
     </div>
 
+    <!-- Черный Рынок -->
     <div class="modal-overlay" id="marketModal">
         <div class="modal-window">
             <div class="modal-title">BLACK MARKET</div>
 
             <div style="font-size: 8px; color: #888; margin: 0 0 15px 0;">SERVICES: SURVIVAL & CHEATS</div>
-            <div class="market-item"><div class="item-name" style="color: #ffd700;">PREMIUM: DAILY ALARM</div><div class="item-desc">BOT SENDS URGENT PUSH REMINDERS + VIP GOLD BADGE</div><button class="action-btn buy" onclick="alert('TG Payments Init...')">SUBSCRIBE - $3.90/MO</button></div>
+            <div class="market-item"><div class="item-name" style="color: #ffd700;">PREMIUM: DAILY ALARM</div><div class="item-desc">3 ALERTS BEFORE DEATH (12H, 3H, 15M) + EXCLUSIVE GOLD NAME & BORDER IN GLOBAL RANKING</div><button class="action-btn buy" onclick="alert('TG Payments Init...')">SUBSCRIBE - $3.90/MO</button></div>
             <div class="market-item"><div class="item-name" style="color: #ff3333;">DEFIBRILLATOR (MAX 5)</div><div class="item-desc">FORGOT TO CLICK? REVIVE A LOST STREAK.</div><button class="action-btn buy" onclick="buyDefibrillator(false)">BUY CHEAT - $9.90</button></div>
 
             <div style="font-size: 8px; color: #888; margin: 25px 0 15px 0;">CATEGORY: CLASSIC & DARK</div>
@@ -299,6 +315,7 @@
         </div>
     </div>
 
+    <!-- Друзья -->
     <div class="modal-overlay" id="friendsModal">
         <div class="modal-window">
             <div class="modal-title">FRIENDS</div>
@@ -313,11 +330,12 @@
         </div>
     </div>
 
+    <!-- Рейтинг -->
     <div class="modal-overlay" id="leaderboardModal">
         <div class="modal-window">
             <div class="modal-title">GLOBAL RANKING</div>
             <div class="leaderboard-list">
-                <div class="lb-row theme-neon"><span class="lb-rank">#1</span><div class="lb-avatar"><img src="Avatars/chess.png" onerror="this.outerHTML='👤';" style="width:100%; height:100%; object-fit:cover;"></div><div class="lb-info"><span class="lb-name">PSYCHO</span><span class="lb-streak">124 DAYS ALIVE</span></div></div>
+                <div class="lb-row vip-row"><span class="lb-rank" style="color: #ffd700;">#1</span><div class="lb-avatar"><img src="Avatars/chess.png" onerror="this.outerHTML='👤';" style="width:100%; height:100%; object-fit:cover;"></div><div class="lb-info"><span class="lb-name">PSYCHO</span><span class="lb-streak">124 DAYS ALIVE</span></div></div>
                 <div class="lb-row theme-stable"><span class="lb-rank">#2</span><div class="lb-avatar"><img src="Avatars/crown.png" onerror="this.outerHTML='👤';" style="width:100%; height:100%; object-fit:cover;"></div><div class="lb-info"><span class="lb-name">SLEEPLESS</span><span class="lb-streak">98 DAYS ALIVE</span></div></div>
                 <div style="color: #666; font-size: 10px; margin: 5px 0;">...</div>
                 <div class="lb-row my-row" id="myLeaderboardRow"><span class="lb-rank">#402</span><div class="lb-avatar" id="myLbAvatar"></div><div class="lb-info"><span class="lb-name" id="myLbName">UNKNOWN</span><span class="lb-streak" id="myLbStreak">0 DAYS ALIVE</span></div></div>
@@ -326,6 +344,7 @@
         </div>
     </div>
 
+    <!-- Кладбище -->
     <div class="modal-overlay" id="graveyardModal">
         <div class="modal-window grave-style">
             <div class="modal-title grave-title">GRAVEYARD</div>
@@ -339,6 +358,7 @@
         </div>
     </div>
 
+    <!-- РЕФЕРАЛКА -->
     <div class="modal-overlay" id="inviteModal">
         <div class="modal-window">
             <div class="modal-title">BLOOD PACT</div>
@@ -374,17 +394,17 @@
         function selectLang(lang) {
             localStorage.setItem("deadline_lang", lang);
             if(lang === 'ru') {
-                document.getElementById("ob-title-welcome").innerText = "ДОБРО ПОЖАЛОВАТЬ";
-                document.getElementById("ob-text-welcome").innerText = "ОНЛАЙН ИГРА НА ДИСЦИПЛИНУ И ВЫЖИВАНИЕ.";
+                document.getElementById("ob-title-welcome").innerText = "ВРЕМЯ ИСТЕКАЕТ";
+                document.getElementById("ob-text-welcome").innerText = "DEADLINE — ЭТО ЖЕСТКИЙ ТЕСТ ТВОЕЙ ДИСЦИПЛИНЫ. ДОКАЖИ, ЧТО МОЖЕШЬ КОНТРОЛИРОВАТЬ СЕБЯ.";
                 document.getElementById("ob-title-rules").innerText = "ПРАВИЛА ИГРЫ";
-                document.getElementById("ob-text-rules").innerHTML = "1. У ТЕБЯ ЕСТЬ <span>24 ЧАСА</span>.<br><br>2. НАЖИМАЙ <span>'I AM ALIVE'</span> КАЖДЫЙ ДЕНЬ.<br><br>3. ЕСЛИ ТАЙМЕР ИСТЕЧЕТ, ТВОЙ СТРИК <span>СГОРИТ</span>.<br><br>4. ВЫЖИВИ ЛЮБОЙ ЦЕНОЙ.";
-                document.getElementById("ob-btn-accept").innerText = "[ ПРИНЯТЬ УСЛОВИЯ ]";
+                document.getElementById("ob-text-rules").innerHTML = "1. ТАЙМЕР ДАЕТ ТЕБЕ РОВНО <span>24 ЧАСА</span>.<br><br>2. ДОКАЖИ СВОЙ ФОКУС: ЖМИ <span>'I AM ALIVE'</span> КАЖДЫЙ ДЕНЬ.<br><br>3. ПРОПУСТИШЬ ДЕДЛАЙН = <span>ПОЛНОЕ ОБНУЛЕНИЕ</span>.<br><br>4. СТАБИЛЬНОСТЬ — ТВОЕ ЕДИНСТВЕННОЕ ОРУЖИЕ.";
+                document.getElementById("ob-btn-accept").innerText = "[ ПРИНЯТЬ ВЫЗОВ ]";
             } else {
-                document.getElementById("ob-title-welcome").innerText = "WELCOME TO DEADLINE";
-                document.getElementById("ob-text-welcome").innerText = "AN ONLINE GAME OF DISCIPLINE AND SURVIVAL.";
+                document.getElementById("ob-title-welcome").innerText = "TIME IS RUNNING OUT";
+                document.getElementById("ob-text-welcome").innerText = "DEADLINE IS A STRICT TEST OF YOUR DISCIPLINE. PROVE YOU CAN CONTROL YOURSELF.";
                 document.getElementById("ob-title-rules").innerText = "THE RULES";
-                document.getElementById("ob-text-rules").innerHTML = "1. YOU HAVE <span>24 HOURS</span>.<br><br>2. CLICK <span>'I AM ALIVE'</span> EVERY DAY.<br><br>3. IF TIME RUNS OUT, YOUR <span>STREAK DIES</span>.<br><br>4. SURVIVE AT ALL COSTS.";
-                document.getElementById("ob-btn-accept").innerText = "[ ACCEPT PACT ]";
+                document.getElementById("ob-text-rules").innerHTML = "1. THE CLOCK GIVES YOU EXACTLY <span>24 HOURS</span>.<br><br>2. PROVE YOUR FOCUS: CLICK <span>'I AM ALIVE'</span> EVERY DAY.<br><br>3. MISS THE DEADLINE = <span>TOTAL RESET</span>.<br><br>4. CONSISTENCY IS YOUR ONLY WEAPON.";
+                document.getElementById("ob-btn-accept").innerText = "[ ACCEPT THE CHALLENGE ]";
             }
             document.getElementById("ob-step-1").style.display = "none";
             document.getElementById("ob-step-2").style.display = "block";
