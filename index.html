@@ -5,13 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>DEADLINE</title>
     
+    <!-- ОФИЦИАЛЬНЫЙ СКРИПТ TELEGRAM WEB APP -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     
     <style>
-        /* ПРЯМОЕ ПОДКЛЮЧЕНИЕ ФАЙЛА ШРИФТА ДЛЯ ВСТРОЕННЫХ БРАУЗЕРОВ */
+        /* ЛОКАЛЬНОЕ ПОДКЛЮЧЕНИЕ ШРИФТА (Защита от блокировщиков Samsung/Apple) */
         @font-face {
             font-family: 'Press Start 2P';
-            src: url('https://fonts.gstatic.com/s/pressstart2p/v15/e3t4euO8T-267oIAQAu6jDQyK3nVivM.woff2') format('woff2');
+            src: url('Fonts/press-start-2p.woff2') format('woff2');
             font-weight: 400;
             font-style: normal;
             font-display: swap;
@@ -19,6 +20,7 @@
 
         body {
             background-color: #0a0a0a; color: #e0e0e0;
+            /* Courier добавляем как запасной системный пиксельный шрифт, если woff2 грузится долго */
             font-family: 'Press Start 2P', 'Courier New', Courier, monospace; text-align: center;
             margin: 0; padding: 20px 10px; box-sizing: border-box; 
             display: flex; flex-direction: column; 
@@ -94,7 +96,7 @@
         #deathModal .modal-title { font-size: 20px; text-shadow: 0 0 10px #ff0000; animation: blink 1s infinite; }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
 
-        /* --- СКРОЛЛИНГ ДЛЯ СПИСКОВ РЕЙТИНГА, КЛАДБИЩА И МАГАЗИНА --- */
+        /* --- СКРОЛЛИНГ --- */
         .leaderboard-list, .market-list, .scrollable-content { 
             display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; 
             overflow-y: auto; -webkit-overflow-scrolling: touch; 
@@ -102,7 +104,6 @@
         }
         .leaderboard-list::-webkit-scrollbar, .market-list::-webkit-scrollbar, .scrollable-content::-webkit-scrollbar { width: 4px; }
         .leaderboard-list::-webkit-scrollbar-thumb, .market-list::-webkit-scrollbar-thumb, .scrollable-content::-webkit-scrollbar-thumb { background: #4a0000; border-radius: 2px; }
-        /* ----------------------------------------------------------- */
 
         .lb-row { display: flex; align-items: center; justify-content: flex-start; background-color: #1a1a1a; border: 2px solid #333; padding: 10px; text-align: left; flex-shrink: 0; }
         .lb-row.my-row { border-color: #ff3333; animation: pulse 2s infinite; }
@@ -139,7 +140,6 @@
             z-index: 10;
             pointer-events: none;
         }
-        /* ---------------------------------- */
 
         .avatar-selector { display: flex; gap: 10px; overflow-x: auto; padding: 10px 5px; margin-bottom: 15px; border: 1px solid #333; background: #050505; flex-shrink: 0; }
         .avatar-selector::-webkit-scrollbar { height: 4px; } .avatar-selector::-webkit-scrollbar-thumb { background: #ff3333; }
@@ -226,6 +226,7 @@
         <button class="menu-btn" style="color:#ff3333;" onclick="openInvite()">[BLOOD PACT (ПРИГЛАСИТЬ)]</button>
     </div>
 
+    <!-- МОДАЛКА ПЕРВОГО ЗАПУСКА (ONBOARDING) -->
     <div class="modal-overlay" id="onboardingModal" style="z-index: 100000; background-color: #050505;">
         <div class="modal-window" style="border-color: #333; max-width: 320px;">
             <div id="ob-step-1">
@@ -254,6 +255,7 @@
         </div>
     </div>
 
+    <!-- ЭКРАН СМЕРТИ -->
     <div class="modal-overlay" id="deathModal" style="z-index: 9999; background-color: rgba(10, 0, 0, 0.98);">
         <div class="modal-window">
             <div class="modal-title">YOU ARE DEAD</div>
@@ -273,6 +275,7 @@
         </div>
     </div>
 
+    <!-- Модалка Профиля (ДОСЬЕ) -->
     <div class="modal-overlay" id="profileModal">
         <div class="modal-window" style="display: flex; flex-direction: column;">
             <div class="modal-title">DOSSIER (ДОСЬЕ)</div>
@@ -294,6 +297,7 @@
         </div>
     </div>
 
+    <!-- Модалка Покупки Аватара -->
     <div class="modal-overlay" id="purchaseAvatarModal" style="z-index: 10001;">
         <div class="modal-window" style="max-width: 280px; border-color: #ffd700;">
             <div class="modal-title" style="color: #ffd700;">UNLOCK IDENTITY</div>
@@ -309,6 +313,7 @@
         </div>
     </div>
 
+    <!-- Окно превью для Темы (фона) -->
     <div class="modal-overlay" id="themePreviewModal" style="z-index: 10002; background-color: rgba(0, 0, 0, 0.4); backdrop-filter: blur(2px);">
         <div class="modal-window" style="border-color: #ffd700; background-color: rgba(17, 17, 17, 0.9);">
             <div class="modal-title" style="color: #ffd700;">THEME PREVIEW</div>
@@ -321,6 +326,7 @@
         </div>
     </div>
 
+    <!-- Черный Рынок -->
     <div class="modal-overlay" id="marketModal">
         <div class="modal-window" style="display: flex; flex-direction: column;">
             <div class="modal-title">BLACK MARKET</div>
@@ -346,6 +352,7 @@
         </div>
     </div>
 
+    <!-- Друзья -->
     <div class="modal-overlay" id="friendsModal">
         <div class="modal-window" style="display: flex; flex-direction: column;">
             <div class="modal-title">FRIENDS</div>
@@ -360,6 +367,7 @@
         </div>
     </div>
 
+    <!-- Рейтинг -->
     <div class="modal-overlay" id="leaderboardModal">
         <div class="modal-window" style="display: flex; flex-direction: column;">
             <div class="modal-title">GLOBAL RANKING</div>
@@ -379,6 +387,7 @@
         </div>
     </div>
 
+    <!-- Кладбище -->
     <div class="modal-overlay" id="graveyardModal">
         <div class="modal-window grave-style" style="display: flex; flex-direction: column;">
             <div class="modal-title grave-title">GRAVEYARD</div>
@@ -396,6 +405,7 @@
         </div>
     </div>
 
+    <!-- РЕФЕРАЛКА -->
     <div class="modal-overlay" id="inviteModal">
         <div class="modal-window">
             <div class="modal-title">BLOOD PACT</div>
