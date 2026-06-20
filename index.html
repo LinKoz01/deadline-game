@@ -83,16 +83,38 @@
         .lb-row.my-row { border-color: #ff3333; animation: pulse 2s infinite; }
         @keyframes pulse { 0% { box-shadow: 0 0 5px #ff3333; } 50% { box-shadow: 0 0 15px #ff3333; } 100% { box-shadow: 0 0 5px #ff3333; } }
         
-        /* VIP PREMIUM АВАТАР И КОРОНА (без перекраски фона) */
-        .lb-row.vip-row .lb-avatar { border: 2px solid #ffd700 !important; animation: vipAvatarPulse 2s infinite; }
-        @keyframes vipAvatarPulse { 0% { box-shadow: 0 0 5px rgba(255, 215, 0, 0.5); } 50% { box-shadow: 0 0 15px rgba(255, 215, 0, 1); } 100% { box-shadow: 0 0 5px rgba(255, 215, 0, 0.5); } }
-        .lb-row.vip-row .lb-name::after { content: ' 👑' !important; color: #ffd700; text-shadow: 0 0 5px #000; }
-
         .lb-rank { font-size: 12px; color: #666; width: 45px; flex-shrink: 0; text-align: left; }
         
-        .lb-avatar { width: 24px; height: 24px; background-color: #000; border: 1px solid #555; display: flex; align-items: center; justify-content: center; margin-right: 15px; flex-shrink: 0; overflow: hidden; font-size: 12px; }
-        .avatar-box { width: 64px; height: 64px; background-color: #222; border: 2px solid #555; margin: 0 auto 15px auto; display: flex; align-items: center; justify-content: center; overflow: hidden; font-size: 32px; }
+        /* КОНТЕЙНЕРЫ ДЛЯ АВАТАРОВ (Убран overflow: hidden, чтобы корона могла торчать за края) */
+        .lb-avatar { width: 24px; height: 24px; background-color: #000; border: 1px solid #555; display: flex; align-items: center; justify-content: center; margin-right: 15px; flex-shrink: 0; position: relative; font-size: 12px; }
+        .avatar-box { width: 64px; height: 64px; background-color: #222; border: 2px solid #555; margin: 0 auto 15px auto; display: flex; align-items: center; justify-content: center; position: relative; font-size: 32px; }
         
+        /* ----- НАСТОЯЩАЯ VIP PNG-РАМКА ----- */
+        .lb-row.vip-row .lb-avatar { border: none !important; }
+        .lb-row.vip-row .lb-avatar::after {
+            content: '';
+            position: absolute;
+            top: -20%; left: -20%; 
+            width: 140%; height: 140%;
+            background: url('Avatars/vip-frame.png') no-repeat center center;
+            background-size: contain;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        body.is-vip .avatar-box { border: none !important; }
+        body.is-vip .avatar-box::after {
+            content: '';
+            position: absolute;
+            top: -15%; left: -15%; 
+            width: 130%; height: 130%;
+            background: url('Avatars/vip-frame.png') no-repeat center center;
+            background-size: contain;
+            z-index: 10;
+            pointer-events: none;
+        }
+        /* ---------------------------------- */
+
         .avatar-selector { display: flex; gap: 10px; overflow-x: auto; padding: 10px 5px; margin-bottom: 15px; border: 1px solid #333; background: #050505; }
         .avatar-selector::-webkit-scrollbar { height: 4px; } .avatar-selector::-webkit-scrollbar-thumb { background: #ff3333; }
         .avatar-option { width: 45px; height: 45px; flex-shrink: 0; background: #1a1a1a; border: 2px solid #333; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; position: relative; overflow: hidden; font-size: 20px;}
@@ -178,9 +200,11 @@
         <button class="menu-btn" style="color:#ff3333;" onclick="openInvite()">[BLOOD PACT (ПРИГЛАСИТЬ)]</button>
     </div>
 
+    <!-- МОДАЛКА ПЕРВОГО ЗАПУСКА (ONBOARDING) -->
     <div class="modal-overlay" id="onboardingModal" style="z-index: 100000; background-color: #050505;">
         <div class="modal-window" style="border-color: #333; max-width: 320px;">
             
+            <!-- ШАГ 1: ЯЗЫК -->
             <div id="ob-step-1">
                 <div class="modal-title" style="color: #fff;">SYSTEM BOOT...</div>
                 <div style="font-size: 8px; color: #888; margin-bottom: 25px;">SELECT YOUR REGION:</div>
@@ -188,6 +212,7 @@
                 <button class="action-btn buy" onclick="selectLang('ru')" style="background: #111; color: #fff; border-color: #555;">[ РУССКИЙ ]</button>
             </div>
 
+            <!-- ШАГ 2: ПРИВЕТСТВИЕ -->
             <div id="ob-step-2" style="display: none;">
                 <div class="modal-title" id="ob-title-welcome" style="color: #ff3333; font-size: 16px;">WELCOME TO DEADLINE</div>
                 <div style="font-size: 10px; color: #aaa; line-height: 1.8; margin-top: 20px;" id="ob-text-welcome">
@@ -196,6 +221,7 @@
                 <button class="blinking-arrow" onclick="nextObStep(3)">[ ↓ ]</button>
             </div>
 
+            <!-- ШАГ 3: ИНСТРУКЦИЯ -->
             <div id="ob-step-3" style="display: none;">
                 <div class="modal-title" id="ob-title-rules" style="color: #ff3333;">THE RULES</div>
                 <div class="ob-text" id="ob-text-rules">
@@ -210,6 +236,7 @@
         </div>
     </div>
 
+    <!-- ЭКРАН СМЕРТИ -->
     <div class="modal-overlay" id="deathModal" style="z-index: 9999; background-color: rgba(10, 0, 0, 0.98);">
         <div class="modal-window">
             <div class="modal-title">YOU ARE DEAD</div>
@@ -232,6 +259,7 @@
         </div>
     </div>
 
+    <!-- Модалка Профиля (ДОСЬЕ) -->
     <div class="modal-overlay" id="profileModal">
         <div class="modal-window">
             <div class="modal-title">DOSSIER (ДОСЬЕ)</div>
@@ -254,6 +282,7 @@
         </div>
     </div>
 
+    <!-- Модалка Покупки Аватара -->
     <div class="modal-overlay" id="purchaseAvatarModal" style="z-index: 10001;">
         <div class="modal-window" style="max-width: 280px; border-color: #ffd700;">
             <div class="modal-title" style="color: #ffd700;">UNLOCK IDENTITY</div>
@@ -269,6 +298,7 @@
         </div>
     </div>
 
+    <!-- Окно превью для Темы (фона) -->
     <div class="modal-overlay" id="themePreviewModal" style="z-index: 10002; background-color: rgba(0, 0, 0, 0.4); backdrop-filter: blur(2px);">
         <div class="modal-window" style="border-color: #ffd700; background-color: rgba(17, 17, 17, 0.9);">
             <div class="modal-title" style="color: #ffd700;">THEME PREVIEW</div>
@@ -281,6 +311,7 @@
         </div>
     </div>
 
+    <!-- Черный Рынок -->
     <div class="modal-overlay" id="marketModal">
         <div class="modal-window">
             <div class="modal-title">BLACK MARKET</div>
@@ -304,6 +335,7 @@
         </div>
     </div>
 
+    <!-- Друзья -->
     <div class="modal-overlay" id="friendsModal">
         <div class="modal-window">
             <div class="modal-title">FRIENDS</div>
@@ -318,6 +350,7 @@
         </div>
     </div>
 
+    <!-- Рейтинг -->
     <div class="modal-overlay" id="leaderboardModal">
         <div class="modal-window">
             <div class="modal-title">GLOBAL RANKING</div>
@@ -331,6 +364,7 @@
         </div>
     </div>
 
+    <!-- Кладбище -->
     <div class="modal-overlay" id="graveyardModal">
         <div class="modal-window grave-style">
             <div class="modal-title grave-title">GRAVEYARD</div>
@@ -344,6 +378,7 @@
         </div>
     </div>
 
+    <!-- РЕФЕРАЛКА -->
     <div class="modal-overlay" id="inviteModal">
         <div class="modal-window">
             <div class="modal-title">BLOOD PACT</div>
@@ -427,10 +462,13 @@
                 btn.innerText = "ACTIVE (АКТИВНА)";
             }
             
-            // Добавляем золотую VIP рамку к строке игрока (оставляя цвет темы нетронутым)
+            // Если есть премиум, добавляем класс на строку игрока и body, чтобы рамка отрисовалась
             let myRow = document.getElementById("myLeaderboardRow");
             if (myRow && isPremium) {
                 myRow.classList.add("vip-row");
+            }
+            if (isPremium) {
+                document.body.classList.add("is-vip");
             }
         }
 
@@ -539,7 +577,7 @@
             document.getElementById("gameBody").className = `theme-${themeKey}`;
             let myRow = document.getElementById("myLeaderboardRow");
             myRow.className = `lb-row my-row theme-${themeKey}`;
-            // Возвращаем рамку премиума, если она была сброшена
+            // Оставляем VIP класс, если он есть
             if (isPremium) { myRow.classList.add("vip-row"); }
             
             let videoPlayer = document.getElementById("video-background"); 
