@@ -78,18 +78,18 @@
         @keyframes pulse { 0% { box-shadow: 0 0 5px #ff3333; } 50% { box-shadow: 0 0 15px #ff3333; } 100% { box-shadow: 0 0 5px #ff3333; } }
         .lb-rank { font-size: 12px; color: #666; width: 45px; flex-shrink: 0; text-align: left; }
         
-        .lb-avatar { width: 24px; height: 24px; background-color: #000; border: 1px solid #555; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #aaa; margin-right: 15px; flex-shrink: 0; overflow: hidden; }
-        .avatar-box { width: 64px; height: 64px; background-color: #222; border: 2px solid #555; margin: 0 auto 15px auto; display: flex; align-items: center; justify-content: center; font-size: 32px; color: #666; }
+        /* Стили для аватарок (Глобальные) */
+        .lb-avatar { width: 24px; height: 24px; background-color: #000; border: 1px solid #555; display: flex; align-items: center; justify-content: center; margin-right: 15px; flex-shrink: 0; overflow: hidden; }
+        .avatar-box { width: 64px; height: 64px; background-color: #222; border: 2px solid #555; margin: 0 auto 15px auto; display: flex; align-items: center; justify-content: center; overflow: hidden; }
         
-        /* СТИЛИ ДЛЯ ВЫБОРА АВАТАРОК В ДОСЬЕ */
+        /* Скроллер выбора аватарок в досье */
         .avatar-selector { display: flex; gap: 10px; overflow-x: auto; padding: 10px 5px; margin-bottom: 15px; border: 1px solid #333; background: #050505; }
         .avatar-selector::-webkit-scrollbar { height: 4px; } .avatar-selector::-webkit-scrollbar-thumb { background: #ff3333; }
-        .avatar-option { width: 45px; height: 45px; flex-shrink: 0; background: #1a1a1a; border: 2px solid #333; display: flex; align-items: center; justify-content: center; font-size: 24px; cursor: pointer; transition: 0.2s; position: relative; }
+        .avatar-option { width: 45px; height: 45px; flex-shrink: 0; background: #1a1a1a; border: 2px solid #333; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; position: relative; overflow: hidden; }
         .avatar-option.unlocked:hover { border-color: #666; }
         .avatar-option.selected { border-color: #ff3333; background: #2a0000; box-shadow: 0 0 10px rgba(255,51,51,0.5); }
-        /* Делаем заблокированные серыми и вешаем замочек */
-        .avatar-option.locked { opacity: 0.4; filter: grayscale(100%); }
-        .avatar-option.locked::after { content: '🔒'; position: absolute; font-size: 10px; bottom: 2px; right: 2px; opacity: 1; filter: none; }
+        .avatar-option.locked img { opacity: 0.3; filter: grayscale(100%); }
+        .avatar-option.locked::after { content: '🔒'; position: absolute; font-size: 10px; bottom: 2px; right: 2px; z-index: 2; }
 
         .lb-info { flex-grow: 1; display: flex; flex-direction: column; gap: 5px; overflow: hidden; }
         .lb-name { font-size: 10px; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -168,7 +168,6 @@
         <button class="menu-btn" style="color:#ff3333;" onclick="openInvite()">[BLOOD PACT (ПРИГЛАСИТЬ)]</button>
     </div>
 
-    <!-- ЭКРАН СМЕРТИ -->
     <div class="modal-overlay" id="deathModal" style="z-index: 9999; background-color: rgba(10, 0, 0, 0.98);">
         <div class="modal-window">
             <div class="modal-title">YOU ARE DEAD</div>
@@ -191,18 +190,16 @@
         </div>
     </div>
 
-    <!-- Модалка Профиля (ДОСЬЕ) -->
     <div class="modal-overlay" id="profileModal">
         <div class="modal-window">
             <div class="modal-title">DOSSIER (ДОСЬЕ)</div>
-            <div class="avatar-box" id="avatarPreview">👤</div>
+            <div class="avatar-box" id="avatarPreview"></div>
+            
             <input type="text" id="nicknameInput" class="retro-input" placeholder="ENTER NAME" maxlength="10">
             
-            <!-- СКРОЛЛЕР АВАТАРОВ -->
-            <div style="font-size: 8px; color: #aaa; margin: 10px 0 5px 0; text-align: left;">IDENTITY (АВАТАР):</div>
+            <div style="font-size: 8px; color: #aaa; margin: 10px 0 5px 0; text-align: left;">IDENTITY (АВАТАРЫ):</div>
             <div class="avatar-selector" id="avatarSelectorContainer">
-                <!-- Генерируется через JS -->
-            </div>
+                </div>
 
             <button class="action-btn buy" onclick="saveProfile()" style="margin-bottom: 15px;">SAVE DATA</button>
             
@@ -216,14 +213,12 @@
         </div>
     </div>
 
-    <!-- Модалка Покупки Аватара (НОВОЕ ЧИСТОЕ ПРЕВЬЮ!) -->
     <div class="modal-overlay" id="purchaseAvatarModal" style="z-index: 10001;">
         <div class="modal-window" style="max-width: 280px; border-color: #ffd700;">
             <div class="modal-title" style="color: #ffd700;">UNLOCK IDENTITY</div>
             
-            <!-- ПРЕВЬЮ ПОКУПКИ (БЕЗ ЗАМОЧКА И ФИЛЬТРОВ) -->
-            <div style="background: #000; border: 2px solid #ffd700; width: 80px; height: 80px; margin: 15px auto; display: flex; align-items: center; justify-content: center; font-size: 48px; border-radius: 10px; box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);">
-                <span id="purchaseAvatarIcon">💀</span>
+            <div style="background: #000; border: 2px solid #ffd700; width: 80px; height: 80px; margin: 15px auto; display: flex; align-items: center; justify-content: center; border-radius: 8px; box-shadow: 0 0 15px rgba(255, 215, 0, 0.3); overflow: hidden;">
+                <img id="purchaseAvatarIcon" src="" style="width:100%; height:100%; object-fit:cover;">
             </div>
             
             <div id="purchaseAvatarName" style="font-size: 12px; color: #fff; margin-bottom: 10px; text-shadow: 1px 1px 2px #000;">THE SKULL</div>
@@ -231,12 +226,11 @@
                 ACQUIRE THIS IDENTITY FOR <br><span style="color:#00ff00; font-size: 10px;">$<span id="purchaseAvatarPrice">0.99</span></span>?
             </div>
             
-            <button class="action-btn buy" onclick="confirmAvatarPurchase()" style="margin-bottom: 10px; background: #ffd700; color: #000; border: none; text-shadow: none; font-weight: bold;">BUY NOW (КУПИТЬ)</button>
-            <button class="close-modal" onclick="closePurchaseAvatar()">[CANCEL (ОТМЕНА)]</button>
+            <button class="action-btn buy" onclick="confirmAvatarPurchase()" style="margin-bottom: 10px; background: #ffd700; color: #000; border: none; font-weight: bold;">BUY NOW (КУПИТЬ)</button>
+            <button class="close-modal" onclick="closePurchaseAvatar()">[CANCEL]</button>
         </div>
     </div>
 
-    <!-- Черный Рынок -->
     <div class="modal-overlay" id="marketModal">
         <div class="modal-window">
             <div class="modal-title">BLACK MARKET</div>
@@ -260,50 +254,46 @@
         </div>
     </div>
 
-    <!-- Друзья -->
     <div class="modal-overlay" id="friendsModal">
         <div class="modal-window">
             <div class="modal-title">FRIENDS</div>
             <div style="font-size: 8px; color: #aaa; margin-bottom: 15px;">MONITOR THEIR PROGRESS.<br>LAUGH AT THEIR FAILURES.</div>
             <div class="leaderboard-list">
-                <div class="lb-row theme-academia"><span class="lb-rank" style="color: #00ff00; font-size: 8px;">ALIVE</span><div class="lb-avatar">👁️</div><div class="lb-info"><span class="lb-name">NIGHT_OWL</span><span class="lb-streak">45 DAYS ALIVE</span></div></div>
-                <div class="lb-row theme-abyss"><span class="lb-rank" style="color: #00ff00; font-size: 8px;">ALIVE</span><div class="lb-avatar">🤖</div><div class="lb-info"><span class="lb-name">EASY_GO</span><span class="lb-streak">3 DAYS ALIVE</span></div></div>
-                <div class="lb-row dead-row"><span class="lb-rank" style="color: #ff3333; font-size: 8px;">DEAD</span><div class="lb-avatar">S</div><div class="lb-info"><span class="lb-name">SLACKER</span><span class="lb-streak">DIED AT 12 DAYS</span></div></div>
+                <div class="lb-row theme-academia"><span class="lb-rank" style="color: #00ff00; font-size: 8px;">ALIVE</span><div class="lb-avatar"><img src="Avatars/rider.png" style="width:100%; height:100%; object-fit:cover;"></div><div class="lb-info"><span class="lb-name">NIGHT_OWL</span><span class="lb-streak">45 DAYS ALIVE</span></div></div>
+                <div class="lb-row theme-abyss"><span class="lb-rank" style="color: #00ff00; font-size: 8px;">ALIVE</span><div class="lb-avatar"><img src="Avatars/toxic.png" style="width:100%; height:100%; object-fit:cover;"></div><div class="lb-info"><span class="lb-name">EASY_GO</span><span class="lb-streak">3 DAYS ALIVE</span></div></div>
+                <div class="lb-row dead-row"><span class="lb-rank" style="color: #ff3333; font-size: 8px;">DEAD</span><div class="lb-avatar"><img src="Avatars/joker.png" style="width:100%; height:100%; object-fit:cover;"></div><div class="lb-info"><span class="lb-name">SLACKER</span><span class="lb-streak">DIED AT 12 DAYS</span></div></div>
             </div>
             <button class="action-btn buy" onclick="closeFriends(); openInvite();" style="margin-bottom: 10px;">ADD MORE FRIENDS</button>
             <button class="close-modal" onclick="closeFriends()">[CLOSE]</button>
         </div>
     </div>
 
-    <!-- Рейтинг -->
     <div class="modal-overlay" id="leaderboardModal">
         <div class="modal-window">
             <div class="modal-title">GLOBAL RANKING</div>
             <div class="leaderboard-list">
-                <div class="lb-row theme-neon"><span class="lb-rank">#1</span><div class="lb-avatar">💀</div><div class="lb-info"><span class="lb-name">PSYCHO</span><span class="lb-streak">124 DAYS ALIVE</span></div></div>
-                <div class="lb-row theme-stable"><span class="lb-rank">#2</span><div class="lb-avatar">V</div><div class="lb-info"><span class="lb-name">SLEEPLESS</span><span class="lb-streak">98 DAYS ALIVE</span></div></div>
+                <div class="lb-row theme-neon"><span class="lb-rank">#1</span><div class="lb-avatar"><img src="Avatars/chess.png" style="width:100%; height:100%; object-fit:cover;"></div><div class="lb-info"><span class="lb-name">PSYCHO</span><span class="lb-streak">124 DAYS ALIVE</span></div></div>
+                <div class="lb-row theme-stable"><span class="lb-rank">#2</span><div class="lb-avatar"><img src="Avatars/crown.png" style="width:100%; height:100%; object-fit:cover;"></div><div class="lb-info"><span class="lb-name">SLEEPLESS</span><span class="lb-streak">98 DAYS ALIVE</span></div></div>
                 <div style="color: #666; font-size: 10px; margin: 5px 0;">...</div>
-                <div class="lb-row my-row" id="myLeaderboardRow"><span class="lb-rank">#402</span><div class="lb-avatar" id="myLbAvatar">👤</div><div class="lb-info"><span class="lb-name" id="myLbName">UNKNOWN</span><span class="lb-streak" id="myLbStreak">0 DAYS ALIVE</span></div></div>
+                <div class="lb-row my-row" id="myLeaderboardRow"><span class="lb-rank">#402</span><div class="lb-avatar" id="myLbAvatar"></div><div class="lb-info"><span class="lb-name" id="myLbName">UNKNOWN</span><span class="lb-streak" id="myLbStreak">0 DAYS ALIVE</span></div></div>
             </div>
             <button class="close-modal" onclick="closeLeaderboard()">[CLOSE]</button>
         </div>
     </div>
 
-    <!-- Кладбище -->
     <div class="modal-overlay" id="graveyardModal">
         <div class="modal-window grave-style">
             <div class="modal-title grave-title">GRAVEYARD</div>
             <div style="font-size: 8px; color: #555; margin-bottom: 15px;">REST IN PIECES (ПОКОЙТЕСЬ НА КУСОЧКИ)</div>
             <div class="leaderboard-list">
-                <div class="lb-row dead-row"><span class="dead-icon">☠️</span><div class="lb-avatar">L</div><div class="lb-info"><span class="lb-name">LOSER_99</span><span class="lb-streak">DIED AT 45 DAYS</span></div></div>
-                <div class="lb-row dead-row"><span class="dead-icon">☠️</span><div class="lb-avatar">A</div><div class="lb-info"><span class="lb-name">ALEX_NOOB</span><span class="lb-streak">DIED AT 12 DAYS</span></div></div>
-                <div class="lb-row dead-row"><span class="dead-icon">☠️</span><div class="lb-avatar">👻</div><div class="lb-info"><span class="lb-name">SLEEPY_HEAD</span><span class="lb-streak">DIED AT 2 DAYS</span></div></div>
+                <div class="lb-row dead-row"><span class="dead-icon">☠️</span><div class="lb-avatar"><img src="Avatars/cat.png" style="width:100%; height:100%; object-fit:cover; filter:grayscale(100%); opacity:0.5;"></div><div class="lb-info"><span class="lb-name">LOSER_99</span><span class="lb-streak">DIED AT 45 DAYS</span></div></div>
+                <div class="lb-row dead-row"><span class="dead-icon">☠️</span><div class="lb-avatar"><img src="Avatars/classic.png" style="width:100%; height:100%; object-fit:cover; filter:grayscale(100%); opacity:0.5;"></div><div class="lb-info"><span class="lb-name">ALEX_NOOB</span><span class="lb-streak">DIED AT 12 DAYS</span></div></div>
+                <div class="lb-row dead-row"><span class="dead-icon">☠️</span><div class="lb-avatar"><img src="Avatars/error.png" style="width:100%; height:100%; object-fit:cover; filter:grayscale(100%); opacity:0.5;"></div><div class="lb-info"><span class="lb-name">SLEEPY_HEAD</span><span class="lb-streak">DIED AT 2 DAYS</span></div></div>
             </div>
             <button class="close-modal" onclick="closeGraveyard()">[CLOSE]</button>
         </div>
     </div>
 
-    <!-- РЕФЕРАЛКА -->
     <div class="modal-overlay" id="inviteModal">
         <div class="modal-window">
             <div class="modal-title">BLOOD PACT</div>
@@ -338,54 +328,66 @@
         document.getElementById("displayNickname").innerText = playerName;
         document.getElementById("myLbName").innerText = playerName;
 
-        // --- ЛОГИКА АВАТАРОВ ---
+        // --- БАЗА ДАННЫХ ВСЕХ АВАТАРОК ---
         const availableAvatars = [
-            { emoji: "👤", price: 0, name: "CLASSIC", isFree: true },
-            { emoji: "🐱", price: 0, name: "STREET CAT", isFree: true },
-            { emoji: "🤡", price: 0, name: "THE JOKER", isFree: true },
-            { emoji: "💀", price: 0.49, name: "THE SKULL", isFree: false },
-            { emoji: "👻", price: 0.99, name: "THE GHOST", isFree: false },
-            { emoji: "👁️", price: 1.49, name: "THE EYE", isFree: false },
-            { emoji: "🤖", price: 1.99, name: "THE CYBORG", isFree: false }
+            { filename: "classic.png", price: 0, name: "CLASSIC", isFree: true },
+            { filename: "cat.png", price: 0, name: "STREET CAT", isFree: true },
+            { filename: "joker.png", price: 0, name: "THE JOKER", isFree: true },
+            { filename: "raven.png", price: 0.99, name: "THE RAVEN", isFree: false },
+            { filename: "doctor.png", price: 1.49, name: "PLAGUE DOCTOR", isFree: false },
+            { filename: "candle.png", price: 1.49, name: "MELTING CANDLE", isFree: false },
+            { filename: "moon.png", price: 1.99, name: "BLOOD MOON", isFree: false },
+            { filename: "toxic.png", price: 0.99, name: "TOXIC MASK", isFree: false },
+            { filename: "demon.png", price: 1.49, name: "NEON DEMON", isFree: false },
+            { filename: "glitch.png", price: 1.99, name: "THE GLITCH", isFree: false },
+            { filename: "rider.png", price: 2.49, name: "NIGHT RIDER", isFree: false },
+            { filename: "stallion.png", price: 3.90, name: "DARK STALLION", isFree: false },
+            { filename: "chess.png", price: 4.90, name: "OBSIDIAN CHESS", isFree: false },
+            { filename: "crown.png", price: 9.90, name: "THE VIP CROWN", isFree: false },
+            { filename: "glass.png", price: 0.99, name: "BROKEN GLASS", isFree: false },
+            { filename: "error.png", price: 1.49, name: "404 ERROR", isFree: false }
         ];
 
-        let unlockedAvatars = JSON.parse(localStorage.getItem("unlockedAvatars")) || ["👤", "🐱", "🤡"];
-        let currentAvatar = localStorage.getItem("playerAvatar") || "👤";
+        let unlockedAvatars = JSON.parse(localStorage.getItem("unlockedAvatars")) || ["classic.png", "cat.png", "joker.png"];
+        let currentAvatar = localStorage.getItem("playerAvatar") || "classic.png";
         
         let pendingPurchaseAvatar = null;
         let pendingPurchasePrice = 0;
         let pendingPurchaseName = "";
 
+        // Обновление картинок на главном экране и в топе
         function updateAvatarUI() {
-            document.getElementById("myLbAvatar").innerText = currentAvatar;
-            document.getElementById("avatarPreview").innerText = currentAvatar;
+            let imgTag = `<img src="Avatars/${currentAvatar}" style="width:100%; height:100%; object-fit:cover;">`;
+            document.getElementById("myLbAvatar").innerHTML = imgTag;
+            document.getElementById("avatarPreview").innerHTML = imgTag;
         }
         
+        // Рендеринг горизонтального списка в Досье
         function renderAvatarSelector() {
             let container = document.getElementById("avatarSelectorContainer");
             container.innerHTML = "";
             
             availableAvatars.forEach(av => {
-                let isUnlocked = av.isFree || unlockedAvatars.includes(av.emoji);
-                let isSelected = currentAvatar === av.emoji;
+                let isUnlocked = av.isFree || unlockedAvatars.includes(av.filename);
+                let isSelected = currentAvatar === av.filename;
                 
                 let div = document.createElement("div");
                 div.className = `avatar-option ${isUnlocked ? 'unlocked' : 'locked'} ${isSelected ? 'selected' : ''}`;
-                div.innerText = av.emoji;
+                div.innerHTML = `<img src="Avatars/${av.filename}" style="width:100%; height:100%; object-fit:cover;">`;
                 
                 div.onclick = () => {
                     if (isUnlocked) {
-                        currentAvatar = av.emoji;
+                        currentAvatar = av.filename;
                         localStorage.setItem("playerAvatar", currentAvatar);
                         updateAvatarUI();
                         renderAvatarSelector(); 
                     } else {
-                        // Передаем в превью чистую иконку (без замка)
-                        pendingPurchaseAvatar = av.emoji;
+                        // Открываем окно покупки с чистым превью
+                        pendingPurchaseAvatar = av.filename;
                         pendingPurchasePrice = av.price;
                         pendingPurchaseName = av.name;
                         
-                        document.getElementById("purchaseAvatarIcon").innerText = av.emoji;
+                        document.getElementById("purchaseAvatarIcon").src = `Avatars/${av.filename}`;
                         document.getElementById("purchaseAvatarName").innerText = av.name;
                         document.getElementById("purchaseAvatarPrice").innerText = av.price.toFixed(2);
                         document.getElementById("purchaseAvatarModal").style.display = "flex";
@@ -397,7 +399,6 @@
 
         function confirmAvatarPurchase() {
             alert(`TG Payments Init... (Имитация покупки за $${pendingPurchasePrice})`);
-            
             unlockedAvatars.push(pendingPurchaseAvatar);
             localStorage.setItem("unlockedAvatars", JSON.stringify(unlockedAvatars));
             
@@ -416,7 +417,7 @@
         updateAvatarUI(); 
         renderAvatarSelector();
 
-        // --- ОСТАЛЬНАЯ ЛОГИКА ---
+        // --- ОСТАЛЬНАЯ ЛОГИКА ИГРЫ ---
         let defibrillators = parseInt(localStorage.getItem("defibCount")) || 0;
         document.getElementById("defibDisplay").innerText = defibrillators;
 
@@ -455,7 +456,6 @@
             
             localStorage.setItem("lastClickDate", today);
             timeLeft = 24 * 60 * 60; 
-            
             streak++;
             localStorage.setItem("playerStreak", streak);
             
@@ -479,7 +479,6 @@
             defibrillators++;
             localStorage.setItem("defibCount", defibrillators);
             document.getElementById("defibDisplay").innerText = defibrillators;
-            
             if (fromDeathScreen) { triggerDeathScreen(); } else { alert("DEFIBRILLATOR PURCHASED! Added to inventory."); }
         }
 
@@ -487,7 +486,6 @@
             closeProfile();
             document.getElementById("deathModal").style.display = "flex";
             document.getElementById("deathStreakDisplay").innerText = streak;
-            
             if (defibrillators > 0) {
                 document.getElementById("defibOption").style.display = "block";
                 document.getElementById("noDefibOption").style.display = "none";
@@ -503,11 +501,9 @@
                 defibrillators--;
                 localStorage.setItem("defibCount", defibrillators);
                 document.getElementById("defibDisplay").innerText = defibrillators;
-                
                 timeLeft = 24 * 60 * 60;
                 let now = new Date();
                 localStorage.setItem("lastClickDate", now.toDateString()); 
-
                 document.getElementById("deathModal").style.display = "none";
                 alert("YOU CHEATED DEATH. STREAK SAVED.");
             }
@@ -518,7 +514,6 @@
             localStorage.setItem("playerStreak", streak);
             document.getElementById("streak").innerText = streak;
             document.getElementById("myLbStreak").innerText = "0 DAYS ALIVE";
-            
             localStorage.removeItem("lastClickDate"); 
             document.getElementById("deathModal").style.display = "none";
             alert("YOUR STREAK IS DEAD. START OVER.");
