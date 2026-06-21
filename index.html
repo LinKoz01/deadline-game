@@ -188,6 +188,17 @@
         #ghostContainer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
         .ghost-entity { position: absolute; color: #aaa; font-size: 8px; opacity: 0; text-shadow: 0 0 5px rgba(0, 0, 0, 0.8); animation: floatUp 8s linear forwards; }
         @keyframes floatUp { 0% { transform: translateY(100vh); opacity: 0; } 20% { opacity: 0.5; } 80% { opacity: 0.5; } 100% { transform: translateY(-100px); opacity: 0; } }
+    /* Клеймо позора */
+.tainted-overlay {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-image: url('Avatars/glitch.jpg'); /* ЗАМЕНИ НА СВОЕ ИМЯ ФАЙЛА */
+    background-size: cover;
+    mix-blend-mode: screen;
+    pointer-events: none;
+    z-index: 10;
+    display: none;
+}
     </style>
 </head>
 <body id="gameBody" class="bg-default">
@@ -754,13 +765,22 @@
         }
 
         function useDefibrillator() {
-            if (defibrillators > 0) {
-                defibrillators--; localStorage.setItem("defibCount", defibrillators);
-                document.getElementById("defibDisplay").innerText = defibrillators;
-                timeLeft = 24 * 60 * 60; let now = new Date(); localStorage.setItem("lastClickDate", now.toDateString()); 
-                document.getElementById("deathModal").style.display = "none"; alert("YOU CHEATED DEATH. STREAK SAVED.");
-            }
-        }
+    if (defibrillators > 0) {
+        defibrillators--; 
+        localStorage.setItem("defibCount", defibrillators);
+        document.getElementById("defibDisplay").innerText = defibrillators;
+        
+        // Ставим метку времени воскрешения
+        localStorage.setItem("taintStartTime", Date.now());
+        
+        timeLeft = 24 * 60 * 60; 
+        let now = new Date(); localStorage.setItem("lastClickDate", now.toDateString()); 
+        
+        document.getElementById("deathModal").style.display = "none"; 
+        alert("YOU CHEATED DEATH. Клеймо наложено на 7 дней.");
+        applyTaintEffect(); // Сразу применяем эффект
+    }
+}
 
         function acceptDeath() {
             streak = 0; localStorage.setItem("playerStreak", streak);
