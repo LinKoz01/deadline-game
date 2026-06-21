@@ -121,9 +121,10 @@ font-weight: normal;
         .lb-rank { font-size: 12px; color: #666; width: 65px; flex-shrink: 0; text-align: left; }
         .dead-icon { font-size: 14px; width: 65px; flex-shrink: 0; text-align: left; }
         
-        /* КОНТЕЙНЕРЫ ДЛЯ АВАТАРОВ */
-        .lb-avatar { width: 24px; height: 24px; background-color: #000; border: 1px solid #555; display: flex; align-items: center; justify-content: center; margin-right: 15px; flex-shrink: 0; position: relative; font-size: 12px; z-index: 1; }
-        .avatar-box { width: 64px; height: 64px; background-color: #222; border: 2px solid #555; margin: 30px auto 10px auto; display: flex; align-items: center; justify-content: center; position: relative; font-size: 32px; flex-shrink: 0; z-index: 1; overflow: hidden; border-radius: 8px; }
+        /* КОНТЕЙНЕРЫ ДЛЯ АВАТАРОВ (ФИКС: УБРАЛИ OVERFLOW ДЛЯ VIP РАМКИ) */
+        .lb-avatar { width: 24px; height: 24px; background-color: #000; border: 1px solid #555; display: flex; align-items: center; justify-content: center; margin-right: 15px; flex-shrink: 0; position: relative; font-size: 12px; z-index: 1; border-radius: 4px; }
+        .avatar-box { width: 64px; height: 64px; background-color: #222; border: 2px solid #555; margin: 30px auto 10px auto; display: flex; align-items: center; justify-content: center; position: relative; font-size: 32px; flex-shrink: 0; z-index: 1; border-radius: 8px; }
+        .lb-avatar img, .avatar-box img { border-radius: inherit; } /* Края круглим тут, чтобы не резать рамку! */
         
         /* ----- НАСТОЯЩАЯ VIP PNG-РАМКА ----- */
         .lb-row.vip-row .lb-avatar { border: none !important; }
@@ -256,10 +257,10 @@ font-weight: normal;
         <div class="modal-window" style="border-color: #333; max-width: 320px;">
             <div id="ob-step-1">
                 <div class="modal-title" style="color: #fff;">SYSTEM BOOT...</div>
-                <div style="font-size: 8px; color: #888; margin-bottom: 25px;">SELECT YOUR REGION:</div>
-                <button class="action-btn buy" onclick="selectLang('en')" style="margin-bottom: 15px; background: #111; color: #fff; border-color: #555;">[ ENGLISH ]</button>
-                <button class="action-btn buy" onclick="selectLang('ru')" style="background: #111; color: #fff; border-color: #555;">[ РУССКИЙ ]</button>
-            </div>
+               <div style="font-size: 8px; color: #aaa; margin: 10px 0 5px 0; display: flex; justify-content: space-between; align-items: flex-end; flex-shrink: 0;">
+                    <span>IDENTITY (АВАТАРЫ):</span>
+                    <span style="color: #00ff00; font-size: 6px; text-align: right;">ВЫБЕРИ СТИЛЬ ЭВОЛЮЦИИ ↓</span>
+                </div>
             <div id="ob-step-2" style="display: none;">
                 <div class="modal-title" id="ob-title-welcome" style="color: #ff3333; font-size: 16px;">WELCOME TO DEADLINE</div>
                 <div style="font-size: 10px; color: #aaa; line-height: 1.8; margin-top: 20px;" id="ob-text-welcome">
@@ -477,7 +478,17 @@ font-weight: normal;
             <button class="close-modal" onclick="document.getElementById('ghostModal').style.display='none'">[CLOSE]</button>
         </div>
     </div>
-
+<div class="modal-overlay" id="evoSelectModal" style="z-index: 10005;">
+        <div class="modal-window" style="border-color: #ff3333; max-width: 320px;">
+            <div class="modal-title">CHOOSE EVOLUTION STAGE</div>
+            <div id="evoSelectName" style="font-size: 12px; color: #fff; margin-bottom: 15px; text-shadow: 1px 1px 2px #000;">THE RAVEN</div>
+            <div class="avatar-selector" id="evoStagesContainer" style="justify-content: center; background: transparent; border: none; padding: 0; gap: 15px; margin-bottom: 20px; overflow: visible;">
+                <!-- Тут будут 3 карточки стилей -->
+            </div>
+            <button class="close-modal" onclick="closeEvoSelect()">[CANCEL]</button>
+        </div>
+    </div>
+        
     <div id="taintTracker" style="display: none; position: fixed; bottom: 20px; right: 20px; background: rgba(0,0,0,0.8); border: 1px solid #ffaa00; color: #ffaa00; font-size: 8px; padding: 5px; z-index: 1000; text-shadow: 1px 1px 2px #000;">
         КЛЕЙМО: <span id="taintDaysLeft">7</span> ДН.
     </div>
@@ -680,6 +691,7 @@ font-weight: normal;
         
         // --- ОБНОВЛЕННАЯ СИСТЕМА МАГАЗИНА С ЭВОЛЮЦИЕЙ ПРЕВЬЮ ---
         // --- ОБНОВЛЕНО: Инвентарь с логикой цикличной смены скинов ---
+        // --- ОБНОВЛЕНО: Инвентарь открывает окно выбора из 3х стадий ---
         function renderAvatarSelector() {
             let container = document.getElementById("avatarSelectorContainer");
             if (!container) return;
@@ -688,65 +700,25 @@ font-weight: normal;
             availableAvatars.forEach(av => {
                 let isUnlocked = av.isFree || unlockedAvatars.includes(av.filename);
                 let isSelected = currentAvatar === av.filename;
-                
-                // Какую картинку показать в ДОСЬЕ (учитывает ручной выбор стиля)
                 let fileToShow = getEvolvedAvatar(av.filename, streak);
 
                 let div = document.createElement("div");
                 div.className = `avatar-option ${isUnlocked ? 'unlocked' : 'locked'} ${isSelected ? 'selected' : ''}`;
                 
-                // Если у аватарки есть эволюции и стрик >= 7, вешаем значок цикла
-                let cycleHint = "";
-                let hasEvo = evolutions[av.filename];
-                let maxAllowed = 0;
-                if (hasEvo) {
-                    if (streak >= 30 && hasEvo[30]) maxAllowed = 30;
-                    else if (streak >= 7 && hasEvo[7]) maxAllowed = 7;
-                }
-                
-                if (isSelected && maxAllowed > 0) {
-                    cycleHint = `<div style="position: absolute; top: 2px; right: 2px; font-size: 8px; z-index: 5; text-shadow: 1px 1px 2px #000;">🔄</div>`;
-                }
-
-                div.innerHTML = `<img src="Avatars/${fileToShow}" onerror="this.onerror=null; this.src='Avatars/${av.filename}'; this.innerHTML='👤';" style="width:100%; height:100%; object-fit:cover; position:relative; z-index:1;">${cycleHint}`;
+                div.innerHTML = `<img src="Avatars/${fileToShow}" onerror="this.onerror=null; this.src='Avatars/${av.filename}'; this.innerHTML='👤';" style="width:100%; height:100%; object-fit:cover; position:relative; z-index:1; border-radius: inherit;">`;
                 
                 div.onclick = () => {
                     if (isUnlocked) {
-                        if (isSelected && maxAllowed > 0) {
-                            // ЛОГИКА ЦИКЛА СТИЛЕЙ: Максимум -> База -> 7 Дней -> Максимум
-                            let currentPref = localStorage.getItem("evoPref_" + av.filename);
-                            let currentLvl = maxAllowed;
-                            if (currentPref !== null) {
-                                currentLvl = parseInt(currentPref);
-                                if (currentLvl > maxAllowed) currentLvl = maxAllowed;
-                            }
-                            
-                            let nextLvl = 0;
-                            if (maxAllowed === 7) {
-                                nextLvl = (currentLvl === 7) ? 0 : 7;
-                            } else if (maxAllowed === 30) {
-                                if (currentLvl === 30) nextLvl = 0;
-                                else if (currentLvl === 0) nextLvl = 7;
-                                else if (currentLvl === 7) nextLvl = 30;
-                            }
-                            
-                            localStorage.setItem("evoPref_" + av.filename, nextLvl);
-                        } else {
-                            // Обычный выбор другой аватарки
-                            currentAvatar = av.filename; 
-                            localStorage.setItem("playerAvatar", currentAvatar);
-                        }
-                        
-                        updateAvatarUI(); 
-                        renderAvatarSelector(); 
+                        // Открываем модальное окно выбора из 3х стилей
+                        openEvoSelect(av.filename, av.name);
                     } else {
-                        // Покупка (показываем актуальную эволюцию для демо)
+                        // Демонстрация в магазине (показываем макс. доступную стадию для превью)
                         let demoFile = av.filename;
+                        let hasEvo = evolutions[av.filename];
                         if (hasEvo) {
                             if (streak >= 30 && hasEvo[30]) demoFile = hasEvo[30];
                             else if (streak >= 7 && hasEvo[7]) demoFile = hasEvo[7];
                         }
-
                         pendingPurchaseAvatar = av.filename; pendingPurchasePrice = av.price; pendingPurchaseName = av.name;
                         document.getElementById("purchaseAvatarIcon").src = `Avatars/${demoFile}`;
                         document.getElementById("purchaseAvatarName").innerText = av.name;
@@ -757,6 +729,63 @@ font-weight: normal;
                 container.appendChild(div);
             });
         }
+
+        // --- ЛОГИКА ОКНА ВЫБОРА СТИЛЕЙ ---
+        function openEvoSelect(baseName, readableName) {
+            document.getElementById("evoSelectName").innerText = readableName;
+            let container = document.getElementById("evoStagesContainer");
+            container.innerHTML = "";
+            
+            let hasEvo = evolutions[baseName];
+            
+            // Если эволюций нет (например, классические 3 шт), просто экипируем и закрываем
+            if (!hasEvo) {
+                currentAvatar = baseName;
+                localStorage.setItem("playerAvatar", currentAvatar);
+                updateAvatarUI(); renderAvatarSelector();
+                return;
+            }
+
+            // Формируем 3 стадии
+            let stages = [
+                { lvl: 0, file: baseName, label: "BASE", days: 0 },
+                { lvl: 7, file: hasEvo[7], label: "7 DAYS", days: 7 },
+                { lvl: 30, file: hasEvo[30], label: "30 DAYS", days: 30 }
+            ];
+
+            stages.forEach(st => {
+                let isLocked = streak < st.days;
+                let isEquipped = (currentAvatar === baseName) && (getEvolvedAvatar(baseName, streak) === st.file);
+
+                let div = document.createElement("div");
+                div.className = `avatar-option ${isLocked ? 'locked' : 'unlocked'} ${isEquipped ? 'selected' : ''}`;
+                div.style.width = "60px"; div.style.height = "60px"; // Карточки крупнее
+                div.style.overflow = "hidden";
+
+                div.innerHTML = `
+                    <img src="Avatars/${st.file}" onerror="this.onerror=null; this.src='Avatars/${baseName}'; this.innerHTML='👤';" style="width:100%; height:100%; object-fit:cover; border-radius: inherit;">
+                    <div style="position:absolute; bottom:0; left:0; width:100%; background:rgba(0,0,0,0.8); text-align:center; font-size:8px; color:${isLocked ? '#888' : '#fff'}; padding:2px 0; z-index:5;">${st.label}</div>
+                `;
+                
+                div.onclick = () => {
+                    if (!isLocked) {
+                        currentAvatar = baseName;
+                        localStorage.setItem("playerAvatar", currentAvatar);
+                        localStorage.setItem("evoPref_" + baseName, st.lvl); // Запоминаем ручной выбор
+                        updateAvatarUI();
+                        renderAvatarSelector();
+                        closeEvoSelect();
+                    } else {
+                        alert(`REQUIRES ${st.days} DAYS STREAK (ТРЕБУЕТСЯ СТРИК ${st.days} ДН.)`);
+                    }
+                };
+                container.appendChild(div);
+            });
+            
+            document.getElementById("evoSelectModal").style.display = "flex";
+        }
+
+        function closeEvoSelect() { document.getElementById("evoSelectModal").style.display = "none"; }
 
         function confirmAvatarPurchase() {
             alert(`TG Payments Init... (Имитация покупки за $${pendingPurchasePrice})`);
@@ -929,17 +958,22 @@ font-weight: normal;
             }
             localStorage.setItem("lastClickDate", today);
             timeLeft = 24 * 60 * 60; 
+            
+            // --- АВТОМАТИЧЕСКАЯ ЭВОЛЮЦИЯ ПРИ ДОСТИЖЕНИИ 7 И 30 ДНЕЙ ---
+            let oldStreak = streak;
             streak++;
+            if ((oldStreak < 7 && streak >= 7) || (oldStreak < 30 && streak >= 30)) {
+                // Игрок достиг нового уровня! Сбрасываем его ручной выбор стиля, чтобы показать обновку
+                localStorage.removeItem("evoPref_" + currentAvatar);
+            }
+            
             localStorage.setItem("playerStreak", streak);
             document.getElementById("streak").innerText = streak;
             document.getElementById("myLbStreak").innerText = `${streak} DAYS ALIVE`;
             updateTimerDisplay();
             let timerEl = document.getElementById("timer"); timerEl.style.color = "#fff"; setTimeout(() => { timerEl.style.color = ""; }, 200);
             
-            // ПРОВЕРЯЕМ КЛЕЙМО ПРИ КАЖДОМ КЛИКЕ
             applyTaintEffect();
-            
-            // --- НОВОЕ: ОБНОВЛЯЕМ АВАТАРКУ ПРЯМО СЕЙЧАС (Вдруг она эволюционировала?) ---
             updateAvatarUI();
         }
 
