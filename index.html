@@ -185,20 +185,22 @@
         .close-modal:hover { color: #fff; }
         .recruit-list { text-align: left; font-size: 8px; color: #aaa; margin-bottom: 20px; line-height: 2; background: #111; padding: 10px; border: 1px dashed #444; }
         .recruit-active { color: #00ff00; } .recruit-pending { color: #555; }
-        #ghostContainer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
-        .ghost-entity { position: absolute; color: #aaa; font-size: 8px; opacity: 0; text-shadow: 0 0 5px rgba(0, 0, 0, 0.8); animation: floatUp 8s linear forwards; }
-        @keyframes floatUp { 0% { transform: translateY(100vh); opacity: 0; } 20% { opacity: 0.5; } 80% { opacity: 0.5; } 100% { transform: translateY(-100px); opacity: 0; } }
-    /* Клеймо позора */
-.tainted-overlay {
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background-image: url('Avatars/glitch.jpg');
-    background-size: cover;
-    mix-blend-mode: screen;
-    pointer-events: none;
-    z-index: 100;
-    display: block;
-}
+        #ghostContainer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 100; }
+        .ghost-entity { position: absolute; color: #aaa; font-size: 10px; opacity: 0; text-shadow: 0 0 5px rgba(0, 0, 0, 0.8); animation: floatUp 8s linear forwards; pointer-events: auto; cursor: pointer; transition: 0.2s; }
+        .ghost-entity:hover { transform: scale(1.2); color: #fff; }
+        @keyframes floatUp { 0% { transform: translateY(100vh); opacity: 0; } 20% { opacity: 0.8; } 80% { opacity: 0.8; } 100% { transform: translateY(-100px); opacity: 0; } }
+
+        /* Клеймо позора */
+        .tainted-overlay {
+            position: absolute;
+            top: -5%; left: -5%; width: 110%; height: 110%;
+            background-image: url('Avatars/glitch.jpg');
+            background-size: cover;
+            mix-blend-mode: screen;
+            pointer-events: none;
+            z-index: 100;
+            display: block;
+        }
     </style>
 </head>
 <body id="gameBody" class="bg-default">
@@ -444,6 +446,10 @@
         </div>
     </div>
 
+    <div id="taintTracker" style="display: none; position: fixed; bottom: 20px; right: 20px; background: rgba(0,0,0,0.8); border: 1px solid #ffaa00; color: #ffaa00; font-size: 8px; padding: 5px; z-index: 1000; text-shadow: 1px 1px 2px #000;">
+        КЛЕЙМО: <span id="taintDaysLeft">7</span> ДН.
+    </div>
+    
     <script>
         // --- СИСТЕМА ОНБОРДИНГА ---
         function checkOnboarding() {
@@ -716,7 +722,16 @@
             h = h < 10 ? "0" + h : h; m = m < 10 ? "0" + m : m; s = s < 10 ? "0" + s : s;
             document.getElementById("timer").innerText = `${h}:${m}:${s}`;
         }
-        setInterval(() => { timeLeft--; updateTimerDisplay(); }, 1000); 
+        // --- ПРАВИЛЬНЫЙ ТАЙМЕР СМЕРТИ ---
+        setInterval(() => { 
+            if (timeLeft > 0) {
+                timeLeft--; 
+                updateTimerDisplay(); 
+            } else if (timeLeft === 0) {
+                timeLeft = -1; // Стопор, чтобы не вызывалось 100 раз
+                triggerDeathScreen();
+            }
+        }, 1000); 
 
         function pressAlive() {
             let now = new Date(); let today = now.toDateString(); 
@@ -737,9 +752,17 @@
             document.getElementById("myLbStreak").innerText = `${streak} DAYS ALIVE`;
             updateTimerDisplay();
             let timerEl = document.getElementById("timer"); timerEl.style.color = "#fff"; setTimeout(() => { timerEl.style.color = ""; }, 200);
+            
+            // ПРОВЕРЯЕМ КЛЕЙМО ПРИ КАЖДОМ КЛИКЕ
+            applyTaintEffect();
         }
 
-        function resetDay() { localStorage.removeItem("lastClickDate"); alert("[DEV TOOL] DAY RESET. Симуляция нового дня успешна!"); }
+        // РАБОЧИЙ ТЕСТ СМЕРТИ
+        function resetDay() { 
+            timeLeft = 3; 
+            localStorage.removeItem("lastClickDate"); 
+            alert("[DEV] День сброшен. Смерть наступит через 3 секунды!"); 
+        }
 
         function buyDefibrillator(fromDeathScreen = false) {
             if (defibrillators >= 5) { alert("MAX CAPACITY REACHED (5/5). YOU CANNOT CARRY MORE."); return; }
@@ -765,75 +788,73 @@
         }
 
         function applyTaintEffect() {
-    const rawTainted = localStorage.getItem("taintedStreak");
-    const currentStreak = parseInt(localStorage.getItem("playerStreak")) || 0;
+            const rawTainted = localStorage.getItem("taintedStreak");
+            const currentStreak = parseInt(localStorage.getItem("playerStreak")) || 0;
+            const tracker = document.getElementById("taintTracker");
+            const daysLeftSpan = document.getElementById("taintDaysLeft");
 
-    console.log("--- DEBUG START ---");
-    console.log("Current Streak:", currentStreak);
-    console.log("Tainted Streak:", rawTainted);
-
-    if (rawTainted === null) {
-        // Клейма нет в хранилище, удаляем визуально, если что-то осталось
-        document.querySelectorAll('.tainted-overlay').forEach(el => el.remove());
-        console.log("Status: No taint found, cleaned up.");
-        return;
-    }
-
-    const tStreak = parseInt(rawTainted);
-
-    if (currentStreak >= tStreak + 7) {
-        // Срок прошел
-        localStorage.removeItem("taintedStreak");
-        document.querySelectorAll('.tainted-overlay').forEach(el => el.remove());
-        console.log("Status: Deadline reached, taint removed.");
-    } else {
-        // Срок не прошел, добавляем
-        const targets = [
-            document.getElementById("avatarPreview"), 
-            document.getElementById("myLbAvatar")
-        ];
-        
-        targets.forEach(el => {
-            if (el && !el.querySelector('.tainted-overlay')) {
-                const overlay = document.createElement('div');
-                overlay.className = 'tainted-overlay';
-                el.appendChild(overlay);
-                console.log("Status: Added overlay to", el.id);
+            if (rawTainted === null) {
+                document.querySelectorAll('.tainted-overlay').forEach(el => el.remove());
+                if(tracker) tracker.style.display = "none";
+                return;
             }
-        });
-        console.log("Status: Taint still active.");
-    }
-    console.log("--- DEBUG END ---");
-}
-applyTaintEffect();
+
+            const tStreak = parseInt(rawTainted);
+            const daysPassed = currentStreak - tStreak;
+            const daysLeft = 7 - daysPassed;
+
+            if (daysLeft <= 0) {
+                localStorage.removeItem("taintedStreak");
+                document.querySelectorAll('.tainted-overlay').forEach(el => el.remove());
+                if(tracker) tracker.style.display = "none";
+            } else {
+                // Обновляем трекер
+                if(tracker) {
+                    tracker.style.display = "block";
+                    daysLeftSpan.innerText = daysLeft;
+                }
+
+                const targets = [
+                    document.getElementById("avatarPreview"), 
+                    document.getElementById("myLbAvatar")
+                ];
+                
+                targets.forEach(el => {
+                    if (el && !el.querySelector('.tainted-overlay')) {
+                        const overlay = document.createElement('div');
+                        overlay.className = 'tainted-overlay';
+                        el.appendChild(overlay);
+                    }
+                });
+            }
+        }
+        applyTaintEffect();
 
         function acceptDeath() {
             streak = 0; localStorage.setItem("playerStreak", streak);
             document.getElementById("streak").innerText = streak; document.getElementById("myLbStreak").innerText = "0 DAYS ALIVE";
             localStorage.removeItem("lastClickDate"); document.getElementById("deathModal").style.display = "none"; alert("YOUR STREAK IS DEAD. START OVER.");
         }
+
         function useDefibrillator() {
-    if (defibrillators > 0) {
-        defibrillators--; 
-        localStorage.setItem("defibCount", defibrillators);
-        document.getElementById("defibDisplay").innerText = defibrillators;
-        
-        // Запоминаем стрик, на котором воскресли
-        localStorage.setItem("taintedStreak", streak);
-        
-        timeLeft = 24 * 60 * 60; 
-        let now = new Date(); 
-        localStorage.setItem("lastClickDate", now.toDateString()); 
-        
-        document.getElementById("deathModal").style.display = "none"; 
-        alert("YOU CHEATED DEATH. Клеймо наложено на 7 игровых дней.");
-        
-        // Сразу обновляем интерфейс, чтобы шрам появился
-        applyTaintEffect(); 
-    } else {
-        alert("У тебя нет дефибрилляторов!");
-    }
-}
+            if (defibrillators > 0) {
+                defibrillators--; 
+                localStorage.setItem("defibCount", defibrillators);
+                document.getElementById("defibDisplay").innerText = defibrillators;
+                
+                localStorage.setItem("taintedStreak", streak);
+                
+                timeLeft = 24 * 60 * 60; 
+                let now = new Date(); 
+                localStorage.setItem("lastClickDate", now.toDateString()); 
+                
+                document.getElementById("deathModal").style.display = "none"; 
+                alert("YOU CHEATED DEATH. Клеймо наложено на 7 игровых дней.");
+                applyTaintEffect(); 
+            } else {
+                alert("У тебя нет дефибрилляторов!");
+            }
+        }
 
         function openMarket() { document.getElementById("marketModal").style.display = "flex"; } function closeMarket() { document.getElementById("marketModal").style.display = "none"; }
         function openProfile() { document.getElementById("profileModal").style.display = "flex"; } function closeProfile() { document.getElementById("profileModal").style.display = "none"; }
@@ -858,28 +879,32 @@ applyTaintEffect();
             closeProfile();
         }
 
-        // --- СИСТЕМА ПРИЗРАКОВ ---
+        // --- ОБНОВЛЕННАЯ СИСТЕМА ПРИЗРАКОВ ---
         const deadNicknames = ["LOSER_99", "ALEX_NOOB", "SLEEPY_HEAD", "FORGOT_TO_CLICK", "LAZY_BONE", "TOO_SLOW", "RAGE_QUIT"];
+        const happyEmojis = ["👻", "✨👻", "🎉", "✌️👻"];
         
         function spawnGhost() {
             const container = document.getElementById('ghostContainer');
-            // Не спавним призраков, если игра свернута или открыты модальные окна (чтобы не перегружать)
             if (!container || document.hidden) return; 
 
             const ghost = document.createElement('div');
             ghost.className = 'ghost-entity';
             
-            // Рандомное имя из списка выбывших
             const randomName = deadNicknames[Math.floor(Math.random() * deadNicknames.length)];
-            ghost.innerText = "👻 " + randomName;
+            const randEmoji = happyEmojis[Math.floor(Math.random() * happyEmojis.length)];
             
-            // Рандомная позиция по горизонтали (от 10% до 90% ширины экрана)
+            ghost.innerText = `${randEmoji} ${randomName} (СВОБОДЕН)`;
+            
             const randomX = Math.floor(Math.random() * 80) + 10;
             ghost.style.left = randomX + '%';
             
+            // Клик по призраку открывает мини-досье
+            ghost.onclick = () => {
+                alert(`ДОСЬЕ ПРИЗРАКА:\nИМЯ: ${randomName}\nСТАТУС: Мертв, но наконец-то выспался.`);
+            };
+            
             container.appendChild(ghost);
 
-            // Удаляем элемент после завершения анимации (8 секунд, как прописано в CSS)
             setTimeout(() => {
                 if (container.contains(ghost)) {
                     ghost.remove();
@@ -887,8 +912,8 @@ applyTaintEffect();
             }, 8000);
         }
 
-        // Спавним новую душу каждые 6 секунд
-        setInterval(spawnGhost, 6000);
+        // Спавним раз в 18 секунд (было 6)
+        setInterval(spawnGhost, 18000);
     </script>
 </body>
 </html>
