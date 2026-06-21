@@ -632,7 +632,11 @@ font-weight: normal;
             document.getElementById("gameBody").className = `theme-${themeKey}`;
             let myRow = document.getElementById("myLeaderboardRow");
             myRow.className = `lb-row my-row theme-${themeKey}`;
-            if (isPremium) { myRow.classList.add("vip-row"); }
+            
+            if (isPremium) { 
+                myRow.classList.add("vip-row"); 
+                document.body.classList.add("is-vip"); // ФИКС: Возвращаем VIP-рамку в профиль!
+            }
             
             let videoPlayer = document.getElementById("video-background"); 
             let isPC = window.innerWidth > 768; 
@@ -661,7 +665,7 @@ font-weight: normal;
                 if(!btn) continue;
                 if(equippedTheme === key) {
                     btn.className = "action-btn equipped";
-                    btn.innerText = "EQUIPPED";
+                    btn.innerText = "UNEQUIP (СНЯТЬ)";
                 } else if(unlockedThemes.includes(key)) {
                     btn.className = "action-btn equip";
                     btn.innerText = "EQUIP (НАДЕТЬ)";
@@ -673,6 +677,15 @@ font-weight: normal;
         }
 
         function handleThemeClick(themeKey) {
+            if(equippedTheme === themeKey) {
+                // Если тема уже надета — СНИМАЕМ ЕЁ
+                equippedTheme = null;
+                localStorage.removeItem('equippedTheme');
+                removeThemeBackground();
+                updateThemeButtons();
+                return;
+            }
+
             if(unlockedThemes.includes(themeKey)) {
                 equippedTheme = themeKey;
                 localStorage.setItem('equippedTheme', equippedTheme);
@@ -766,9 +779,12 @@ font-weight: normal;
         }
 
         // РАБОЧИЙ ТЕСТ ДНЕЙ
+        // ИДЕАЛЬНЫЙ ТЕСТ: сбрасывает день и дает 5 секунд до смерти
         function resetDay() { 
             localStorage.removeItem("lastClickDate"); 
-            alert("[DEV] Дата сброшена! Теперь ты можешь снова нажать 'I AM ALIVE'."); 
+            timeLeft = 5; 
+            updateTimerDisplay();
+            alert("[DEV] День сброшен! У тебя 5 СЕКУНД: либо жми 'I AM ALIVE', либо умрешь по таймеру."); 
         }
 
         function buyDefibrillator(fromDeathScreen = false) {
@@ -893,10 +909,14 @@ font-weight: normal;
         function spawnGhost() {
             const container = document.getElementById('ghostContainer');
             
-            // Проверяем, открыто ли хоть одно меню
-            const isAnyModalOpen = Array.from(document.querySelectorAll('.modal-overlay')).some(modal => window.getComputedStyle(modal).display !== 'none');
+            // Проверка: открыто ли хоть одно меню прямо сейчас?
+            let isModalOpen = false;
+            document.querySelectorAll('.modal-overlay').forEach(el => {
+                if (el.style.display === 'flex') isModalOpen = true;
+            });
             
-            if (!container || document.hidden || isAnyModalOpen) return; 
+            // Если меню открыто или окно свернуто — НЕ спавним призрака
+            if (!container || document.hidden || isModalOpen) return; 
 
             const ghost = document.createElement('div');
             ghost.className = 'ghost-entity';
@@ -908,25 +928,15 @@ font-weight: normal;
             
             ghost.innerText = "👻 " + randomName; 
             
-            // Ограничиваем спавн до 65% экрана, чтобы длинные ники не улетали за край
             const randomX = Math.floor(Math.random() * 55) + 10;
             ghost.style.left = randomX + '%';
             
-            // Клик открывает нормальное окно
+            // Клик открывает досье (СТРОГО НА АНГЛИЙСКОМ)
             ghost.onclick = () => {
-                let lang = localStorage.getItem("deadline_lang") || "en";
-                
                 document.getElementById('ghostName').innerText = randomName;
                 document.getElementById('ghostAvatar').innerHTML = `<img src="Avatars/${randomAvatar}" onerror="this.onerror=null; this.outerHTML='👤';" style="width:100%; height:100%; object-fit:cover;">`;
-                
-                if(lang === 'ru') {
-                    document.getElementById('ghostDays').innerText = `СТРИК ПРИ СМЕРТИ: ${randomDays} ДНЕЙ`;
-                    document.getElementById('ghostStatus').innerText = "СТАТУС: Мертв. Навсегда привязан к Кладбищу.";
-                } else {
-                    document.getElementById('ghostDays').innerText = `STREAK AT DEATH: ${randomDays} DAYS`;
-                    document.getElementById('ghostStatus').innerText = "STATUS: Dead. Bound to the Graveyard forever.";
-                }
-                
+                document.getElementById('ghostDays').innerText = `STREAK AT DEATH: ${randomDays} DAYS`;
+                document.getElementById('ghostStatus').innerText = "STATUS: DEAD. ROTTING IN THE GRAVEYARD.";
                 document.getElementById('ghostModal').style.display = 'flex';
             };
             
