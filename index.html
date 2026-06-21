@@ -765,25 +765,24 @@
         }
 
         function applyTaintEffect() {
-    // Получаем текущий стрик из глобальной переменной или локального хранилища
+    // Берем актуальный стрик из памяти прямо сейчас
     const currentStreak = parseInt(localStorage.getItem("playerStreak")) || 0;
     const taintedStreak = localStorage.getItem("taintedStreak");
 
-    // Если клейма нет — убираем всё и выходим
+    // Если метки нет — принудительно удаляем все оверлеи
     if (taintedStreak === null) {
         document.querySelectorAll('.tainted-overlay').forEach(el => el.remove());
         return;
     }
 
     const tStreak = parseInt(taintedStreak);
-
-    // Если срок не прошел (текущий стрик < стрик при воскрешении + 7)
+    
+    // Если срок еще не вышел (текущий < старт + 7)
     if (currentStreak < tStreak + 7) {
         const targets = [
             document.getElementById("avatarPreview"), 
             document.getElementById("myLbAvatar")
         ];
-        
         targets.forEach(el => {
             if (el && !el.querySelector('.tainted-overlay')) {
                 const overlay = document.createElement('div');
@@ -792,7 +791,7 @@
             }
         });
     } else {
-        // Срок прошел — удаляем всё
+        // Срок вышел (стрик >= старт + 7) — удаляем метку и ОВЕРЛЕИ
         localStorage.removeItem("taintedStreak");
         document.querySelectorAll('.tainted-overlay').forEach(el => el.remove());
     }
