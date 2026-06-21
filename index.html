@@ -795,6 +795,31 @@ applyTaintEffect();
             document.getElementById("streak").innerText = streak; document.getElementById("myLbStreak").innerText = "0 DAYS ALIVE";
             localStorage.removeItem("lastClickDate"); document.getElementById("deathModal").style.display = "none"; alert("YOUR STREAK IS DEAD. START OVER.");
         }
+        function useDefibrillator() {
+    if (defibrillators > 0) {
+        defibrillators--; 
+        localStorage.setItem("defibCount", defibrillators);
+        document.getElementById("defibDisplay").innerText = defibrillators;
+        
+        // Ставим метку времени воскрешения для клейма
+        localStorage.setItem("taintStartTime", Date.now());
+        
+        // Сброс таймера игры
+        timeLeft = 24 * 60 * 60; 
+        let now = new Date(); 
+        localStorage.setItem("lastClickDate", now.toDateString()); 
+        
+        // Закрываем модалку смерти
+        document.getElementById("deathModal").style.display = "none"; 
+        
+        alert("YOU CHEATED DEATH. Клеймо наложено на 7 дней.");
+        
+        // Применяем визуальный эффект клейма
+        applyTaintEffect(); 
+    } else {
+        alert("У тебя нет дефибрилляторов!");
+    }
+}
 
         function openMarket() { document.getElementById("marketModal").style.display = "flex"; } function closeMarket() { document.getElementById("marketModal").style.display = "none"; }
         function openProfile() { document.getElementById("profileModal").style.display = "flex"; } function closeProfile() { document.getElementById("profileModal").style.display = "none"; }
