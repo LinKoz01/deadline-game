@@ -934,9 +934,11 @@ font-weight: normal;
             let oldStreak = streak;
             streak++;
             
-            // Если перешли рубеж 7 или 30 дней, сбрасываем ручной выбор стиля, чтобы показать обновку
+            // ИСПРАВЛЕНО: Теперь сбрасывает стиль у ВСЕХ аватарок, а не только у текущей
             if ((oldStreak < 7 && streak >= 7) || (oldStreak < 30 && streak >= 30)) {
-                localStorage.removeItem("evoPref_" + currentAvatar);
+                availableAvatars.forEach(av => {
+                    localStorage.removeItem("evoPref_" + av.filename);
+                });
             }
             
             localStorage.setItem("playerStreak", streak);
@@ -947,6 +949,9 @@ font-weight: normal;
             
             applyTaintEffect();
             updateAvatarUI();
+            
+            // ИСПРАВЛЕНО: Мгновенно перерисовываем нижний список превью
+            renderAvatarSelector();
         }
 
         function resetDay() { 
@@ -1024,6 +1029,10 @@ font-weight: normal;
             streak = 0; localStorage.setItem("playerStreak", streak);
             document.getElementById("streak").innerText = streak; document.getElementById("myLbStreak").innerText = "0 DAYS ALIVE";
             localStorage.removeItem("lastClickDate"); document.getElementById("deathModal").style.display = "none"; alert("YOUR STREAK IS DEAD. START OVER.");
+            
+            // ИСПРАВЛЕНО: При смерти аватарка и список превью сразу сбрасываются на базу
+            updateAvatarUI();
+            renderAvatarSelector();
         }
 
         function useDefibrillator() {
