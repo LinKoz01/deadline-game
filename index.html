@@ -123,7 +123,7 @@ font-weight: normal;
         
         /* КОНТЕЙНЕРЫ ДЛЯ АВАТАРОВ */
         .lb-avatar { width: 24px; height: 24px; background-color: #000; border: 1px solid #555; display: flex; align-items: center; justify-content: center; margin-right: 15px; flex-shrink: 0; position: relative; font-size: 12px; }
-        .avatar-box { width: 64px; height: 64px; background-color: #222; border: 2px solid #555; margin: 20px auto 15px auto; display: flex; align-items: center; justify-content: center; position: relative; font-size: 32px; flex-shrink: 0; }
+        .avatar-box { width: 64px; height: 64px; background-color: #222; border: 2px solid #555; margin: 30px auto 25px auto; display: flex; align-items: center; justify-content: center; position: relative; font-size: 32px; flex-shrink: 0; }
         
         /* ----- НАСТОЯЩАЯ VIP PNG-РАМКА ----- */
         .lb-row.vip-row .lb-avatar { border: none !important; }
@@ -192,7 +192,7 @@ font-weight: normal;
         .recruit-active { color: #00ff00; } .recruit-pending { color: #555; }
         
         #ghostContainer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 100; }
-        .ghost-entity { position: absolute; color: #aaa; font-size: 14px; padding: 10px; opacity: 0; text-shadow: 0 0 5px rgba(0, 0, 0, 0.8); animation: floatUp 8s linear forwards; pointer-events: auto; cursor: pointer; transition: 0.2s; white-space: nowrap; }
+        .ghost-entity { position: absolute; color: #aaa; font-size: 10px; padding: 5px; opacity: 0; text-shadow: 0 0 5px rgba(0, 0, 0, 0.8); animation: floatUp 8s linear forwards; pointer-events: auto; cursor: pointer; transition: 0.2s; white-space: nowrap; }
         .ghost-entity:hover { transform: scale(1.2); color: #fff; }
         @keyframes floatUp { 0% { transform: translateY(100vh); opacity: 0; } 20% { opacity: 0.8; } 80% { opacity: 0.8; } 100% { transform: translateY(-100px); opacity: 0; } }
 
@@ -765,11 +765,10 @@ font-weight: normal;
             applyTaintEffect();
         }
 
-        // РАБОЧИЙ ТЕСТ СМЕРТИ
+        // РАБОЧИЙ ТЕСТ ДНЕЙ
         function resetDay() { 
-            timeLeft = 3; 
             localStorage.removeItem("lastClickDate"); 
-            alert("[DEV] День сброшен. Смерть наступит через 3 секунды!"); 
+            alert("[DEV] Дата сброшена! Теперь ты можешь снова нажать 'I AM ALIVE'."); 
         }
 
         function buyDefibrillator(fromDeathScreen = false) {
@@ -909,7 +908,8 @@ font-weight: normal;
             
             ghost.innerText = "👻 " + randomName; 
             
-            const randomX = Math.floor(Math.random() * 80) + 10;
+            // Ограничиваем спавн до 65% экрана, чтобы длинные ники не улетали за край
+            const randomX = Math.floor(Math.random() * 55) + 10;
             ghost.style.left = randomX + '%';
             
             // Клик открывает нормальное окно
@@ -920,10 +920,10 @@ font-weight: normal;
                 document.getElementById('ghostAvatar').innerHTML = `<img src="Avatars/${randomAvatar}" onerror="this.onerror=null; this.outerHTML='👤';" style="width:100%; height:100%; object-fit:cover;">`;
                 
                 if(lang === 'ru') {
-                    document.getElementById('ghostDays').innerText = `УМЕР НА ${randomDays} ДНЕ`;
+                    document.getElementById('ghostDays').innerText = `СТРИК ПРИ СМЕРТИ: ${randomDays} ДНЕЙ`;
                     document.getElementById('ghostStatus').innerText = "СТАТУС: Мертв. Навсегда привязан к Кладбищу.";
                 } else {
-                    document.getElementById('ghostDays').innerText = `DIED AT ${randomDays} DAYS`;
+                    document.getElementById('ghostDays').innerText = `STREAK AT DEATH: ${randomDays} DAYS`;
                     document.getElementById('ghostStatus').innerText = "STATUS: Dead. Bound to the Graveyard forever.";
                 }
                 
