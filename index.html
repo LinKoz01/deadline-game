@@ -765,14 +765,15 @@
         }
 
         function applyTaintEffect() {
-    const taintStart = localStorage.getItem("taintStartTime");
-    if (!taintStart) return;
+    const taintedStreak = localStorage.getItem("taintedStreak");
+    
+    // Если метки нет - клейма нет
+    if (taintedStreak === null) return;
 
-    // 7 дней в миллисекундах
-    const duration = 7 * 24 * 60 * 60 * 1000; 
-    const now = Date.now();
-
-    if (now - parseInt(taintStart) < duration) {
+    const tStreak = parseInt(taintedStreak);
+    
+    // Условие: если текущий стрик меньше, чем (стрик при воскрешении + 7)
+    if (streak < tStreak + 7) {
         const targets = [
             document.getElementById("avatarPreview"), 
             document.getElementById("myLbAvatar")
@@ -785,7 +786,9 @@
             }
         });
     } else {
-        localStorage.removeItem("taintStartTime");
+        // Срок прошел, удаляем метку и оверлеи
+        localStorage.removeItem("taintedStreak");
+        document.querySelectorAll('.tainted-overlay').forEach(el => el.remove());
     }
 }
 applyTaintEffect();
@@ -801,20 +804,15 @@ applyTaintEffect();
         localStorage.setItem("defibCount", defibrillators);
         document.getElementById("defibDisplay").innerText = defibrillators;
         
-        // Ставим метку времени воскрешения для клейма
-        localStorage.setItem("taintStartTime", Date.now());
+        // ЗАПОМИНАЕМ, на каком стрике мы воскресли
+        localStorage.setItem("taintedStreak", streak);
         
-        // Сброс таймера игры
         timeLeft = 24 * 60 * 60; 
         let now = new Date(); 
         localStorage.setItem("lastClickDate", now.toDateString()); 
         
-        // Закрываем модалку смерти
         document.getElementById("deathModal").style.display = "none"; 
-        
-        alert("YOU CHEATED DEATH. Клеймо наложено на 7 дней.");
-        
-        // Применяем визуальный эффект клейма
+        alert("YOU CHEATED DEATH. Клеймо наложено на 7 игровых дней.");
         applyTaintEffect(); 
     } else {
         alert("У тебя нет дефибрилляторов!");
