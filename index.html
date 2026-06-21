@@ -108,7 +108,7 @@ font-weight: normal;
         }
         .scrollable-content { 
             display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; 
-            overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; 
+            overflow-y: auto; overflow-x: visible; -webkit-overflow-scrolling: touch; 
             padding: 15px 5px; flex-grow: 1; 
         }
         .leaderboard-list::-webkit-scrollbar, .market-list::-webkit-scrollbar, .scrollable-content::-webkit-scrollbar { width: 4px; }
@@ -192,7 +192,7 @@ font-weight: normal;
         .recruit-active { color: #00ff00; } .recruit-pending { color: #555; }
         
         #ghostContainer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 100; }
-        .ghost-entity { position: absolute; color: #aaa; font-size: 10px; opacity: 0; text-shadow: 0 0 5px rgba(0, 0, 0, 0.8); animation: floatUp 8s linear forwards; pointer-events: auto; cursor: pointer; transition: 0.2s; }
+        .ghost-entity { position: absolute; color: #aaa; font-size: 14px; padding: 10px; opacity: 0; text-shadow: 0 0 5px rgba(0, 0, 0, 0.8); animation: floatUp 8s linear forwards; pointer-events: auto; cursor: pointer; transition: 0.2s; white-space: nowrap; }
         .ghost-entity:hover { transform: scale(1.2); color: #fff; }
         @keyframes floatUp { 0% { transform: translateY(100vh); opacity: 0; } 20% { opacity: 0.8; } 80% { opacity: 0.8; } 100% { transform: translateY(-100px); opacity: 0; } }
 
@@ -893,7 +893,11 @@ font-weight: normal;
         
         function spawnGhost() {
             const container = document.getElementById('ghostContainer');
-            if (!container || document.hidden) return; 
+            
+            // Проверяем, открыто ли хоть одно меню
+            const isAnyModalOpen = Array.from(document.querySelectorAll('.modal-overlay')).some(modal => window.getComputedStyle(modal).display !== 'none');
+            
+            if (!container || document.hidden || isAnyModalOpen) return; 
 
             const ghost = document.createElement('div');
             ghost.className = 'ghost-entity';
@@ -901,10 +905,9 @@ font-weight: normal;
             const randIndex = Math.floor(Math.random() * deadNicknames.length);
             const randomName = deadNicknames[randIndex];
             const randomAvatar = deadAvatars[randIndex];
-            const randomDays = Math.floor(Math.random() * 50) + 1; // Рандомные дни от 1 до 50
+            const randomDays = Math.floor(Math.random() * 50) + 1;
             
-            // Возвращаем классический стикер
-            ghost.innerText = "👻"; 
+            ghost.innerText = "👻 " + randomName; 
             
             const randomX = Math.floor(Math.random() * 80) + 10;
             ghost.style.left = randomX + '%';
