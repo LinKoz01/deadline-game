@@ -77,13 +77,19 @@ font-weight: normal;
         .menu-btn { background: none; border: none; color: #aaa; font-size: 10px; text-decoration: underline; cursor: pointer; text-shadow: 1px 1px 2px #000; }
         .menu-btn:hover { color: #fff; }
 
-        /* Окна */
-        .modal-overlay { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.95); z-index: 10; flex-direction: column; align-items: center; justify-content: center; }
+        /* --- ОБНОВЛЕННЫЕ ОКНА И СЛОИ (Z-INDEX) --- */
+        .modal-overlay { 
+            display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+            background-color: rgba(0, 0, 0, 0.95); 
+            z-index: 2000 !important; /* Очень высоко, чтобы быть над призраками */
+            flex-direction: column; align-items: center; justify-content: center; 
+        }
         
         .modal-window { 
             background-color: #111; border: 4px solid #4a0000; width: 90%; max-width: 380px; padding: 15px; 
             box-shadow: 0 0 20px rgba(255, 0, 0, 0.2);
             max-height: 85vh; display: flex; flex-direction: column;
+            position: relative; z-index: 2001;
         }
         
         .modal-title { color: #ff3333; font-size: 14px; margin-bottom: 15px; text-shadow: 2px 2px #000; flex-shrink: 0; }
@@ -114,99 +120,46 @@ font-weight: normal;
         .leaderboard-list::-webkit-scrollbar, .market-list::-webkit-scrollbar, .scrollable-content::-webkit-scrollbar { width: 4px; }
         .leaderboard-list::-webkit-scrollbar-thumb, .market-list::-webkit-scrollbar-thumb, .scrollable-content::-webkit-scrollbar-thumb { background: #4a0000; border-radius: 2px; }
 
-        .lb-row { display: flex; align-items: center; justify-content: flex-start; background-color: #1a1a1a; border: 2px solid #333; padding: 10px; text-align: left; flex-shrink: 0; }
-        .lb-row.my-row { border-color: #ff3333; animation: pulse 2s infinite; }
+        .lb-row { display: flex; align-items: center; justify-content: flex-start; background-color: #1a1a1a; border: 2px solid #333; padding: 10px; text-align: left; flex-shrink: 0; position: relative; }
+        .lb-row.my-row { border-color: #ff3333; animation: pulse 2s infinite; z-index: 5; }
         @keyframes pulse { 0% { box-shadow: 0 0 5px #ff3333; } 50% { box-shadow: 0 0 15px #ff3333; } 100% { box-shadow: 0 0 5px #ff3333; } }
         
         .lb-rank { font-size: 12px; color: #666; width: 65px; flex-shrink: 0; text-align: left; }
         .dead-icon { font-size: 14px; width: 65px; flex-shrink: 0; text-align: left; }
         
         /* КОНТЕЙНЕРЫ ДЛЯ АВАТАРОВ */
-        .lb-avatar { width: 24px; height: 24px; background-color: #000; border: 1px solid #555; display: flex; align-items: center; justify-content: center; margin-right: 15px; flex-shrink: 0; position: relative; font-size: 12px; }
-        .avatar-box { width: 64px; height: 64px; background-color: #222; border: 2px solid #555; margin: 30px auto 25px auto; display: flex; align-items: center; justify-content: center; position: relative; font-size: 32px; flex-shrink: 0; }
+        .lb-avatar { width: 24px; height: 24px; background-color: #000; border: 1px solid #555; display: flex; align-items: center; justify-content: center; margin-right: 15px; flex-shrink: 0; position: relative; font-size: 12px; z-index: 1; }
+        .avatar-box { width: 64px; height: 64px; background-color: #222; border: 2px solid #555; margin: 30px auto 10px auto; display: flex; align-items: center; justify-content: center; position: relative; font-size: 32px; flex-shrink: 0; z-index: 1; overflow: hidden; border-radius: 8px;}
         
-        /* ----- НАСТОЯЩАЯ VIP PNG-РАМКА ----- */
-        .lb-row.vip-row .lb-avatar { border: none !important; }
-        .lb-row.vip-row .lb-avatar::after {
-            content: '';
-            position: absolute;
-            top: -20%; left: -20%; 
-            width: 140%; height: 140%;
-            background: url('Avatars/vip-frame.png') no-repeat center center;
-            background-size: contain;
-            z-index: 10;
-            pointer-events: none;
-        }
-
-        body.is-vip .avatar-box { border: none !important; }
-        body.is-vip .avatar-box::after {
-            content: '';
-            position: absolute;
-            top: -20%; left: -20%; 
-            width: 140%; height: 140%;
-            background: url('Avatars/vip-frame.png') no-repeat center center;
-            background-size: contain;
-            z-index: 100 !important;
-            pointer-events: none;
-        }
-
-        .avatar-selector { display: flex; gap: 10px; overflow-x: auto; padding: 10px 5px; margin-bottom: 15px; border: 1px solid #333; background: #050505; flex-shrink: 0; }
-        .avatar-selector::-webkit-scrollbar { height: 4px; } .avatar-selector::-webkit-scrollbar-thumb { background: #ff3333; }
-        .avatar-option { width: 45px; height: 45px; flex-shrink: 0; background: #1a1a1a; border: 2px solid #333; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; position: relative; overflow: hidden; font-size: 20px;}
-        .avatar-option.unlocked:hover { border-color: #666; }
-        .avatar-option.selected { border-color: #ff3333; background: #2a0000; box-shadow: 0 0 10px rgba(255,51,51,0.5); }
-        .avatar-option.locked img { opacity: 0.3; filter: grayscale(100%); }
-        .avatar-option.locked::after { content: '🔒'; position: absolute; font-size: 10px; bottom: 2px; right: 2px; z-index: 2; }
-
-        .lb-info { flex-grow: 1; display: flex; flex-direction: column; gap: 5px; overflow: hidden; }
-        .lb-name { font-size: 10px; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .lb-streak { font-size: 8px; color: #ff3333; }
-
-        /* Темы строк */
-        .lb-row.theme-academia { border-color: #8b0000; background: linear-gradient(90deg, #2a0808, #111); } .lb-row.theme-academia .lb-name::before { content: '📚 '; }
-        .lb-row.theme-library { border-color: #4a4a6a; background: linear-gradient(90deg, #1a1a25, #111); } .lb-row.theme-library .lb-name::before { content: '🕯️ '; }
-        .lb-row.theme-crypt { border-color: #4a5a4a; background: linear-gradient(90deg, #151a15, #111); border-style: dashed; } .lb-row.theme-crypt .lb-name::before { content: '💀 '; } .lb-row.theme-crypt .lb-name { color: #ccffcc; text-shadow: 0 0 5px #00ff00; }
-        .lb-row.theme-stable { border-color: #b8860b; background: linear-gradient(90deg, #2a1505, #111); } .lb-row.theme-stable .lb-name::before { content: '👑 '; } .lb-row.theme-stable .lb-name { color: #ffd700; }
-        .lb-row.theme-abyss { border-color: #00ff00; background: linear-gradient(90deg, #001a00, #111); } .lb-row.theme-abyss .lb-name::before { content: '/>_ '; color: #00ff00;} .lb-row.theme-abyss .lb-name { color: #00ff00; text-shadow: 0 0 8px #00ff00; }
-        .lb-row.theme-neon { border-color: #ff00ff; background: linear-gradient(90deg, #1a052a, #111); } .lb-row.theme-neon .lb-name::before { content: '⚡ '; } .lb-row.theme-neon .lb-name { color: #ffb3ff; text-shadow: 0 0 8px #ff00ff; }
-        .lb-row.theme-glitch { border-color: #ffff00; background: linear-gradient(90deg, #1a1a00, #111); } .lb-row.theme-glitch .lb-name::before { content: '⚠ '; color: #ffff00; } .lb-row.theme-glitch .lb-name { text-shadow: -2px 0 red, 2px 0 blue; }
-        
-        .lb-row.dead-row { background-color: #0d0d0d; border-color: #222; opacity: 0.7; } .lb-row.dead-row .lb-avatar { border-style: dashed; color: #444; } .lb-row.dead-row .lb-name { color: #666; text-decoration: line-through; } .lb-row.dead-row .lb-streak { color: #444; }
-
-        .retro-input { background-color: #000; color: #fff; font-size: 10px; border: 2px solid #4a0000; padding: 10px; width: 80%; text-align: center; margin: 0 auto 15px auto; display: block; outline: none; flex-shrink: 0; box-sizing: border-box; }
-        .retro-input:focus { border-color: #ff3333; }
-        
-        .market-item { background-color: #1a1a1a; border: 2px solid #333; padding: 10px; margin-bottom: 10px; text-align: left; flex-shrink: 0; }
-        .item-name { color: #fff; font-size: 10px; margin-bottom: 6px; line-height: 1.4; }
-        .item-desc { font-size: 6px; color: #888; margin-bottom: 10px; line-height: 1.4; }
-        
-        .action-btn { background-color: #fff; color: #000; font-size: 10px; border: 2px solid #aaa; padding: 10px; cursor: pointer; width: 100%; text-align: center; transition: 0.2s; flex-shrink: 0; }
-        .action-btn.buy:hover { background-color: #ff3333; color: #fff; border-color: #ff3333; }
-        .action-btn.equip { background-color: #333; color: #fff; border-color: #555; }
-        .action-btn.equip:hover { background-color: #555; }
-        .action-btn.equipped { background-color: #8b0000; color: #fff; border-color: #ff3333; cursor: default; }
-        
-        .close-modal { background: none; border: none; color: #666; font-size: 10px; margin-top: 10px; cursor: pointer; padding: 10px; flex-shrink: 0; }
-        .close-modal:hover { color: #fff; }
-        .recruit-list { text-align: left; font-size: 8px; color: #aaa; margin-bottom: 20px; line-height: 2; background: #111; padding: 10px; border: 1px dashed #444; }
-        .recruit-active { color: #00ff00; } .recruit-pending { color: #555; }
-        
-        #ghostContainer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 100; }
-        .ghost-entity { position: absolute; color: #aaa; font-size: 10px; padding: 5px; opacity: 0; text-shadow: 0 0 5px rgba(0, 0, 0, 0.8); animation: floatUp 8s linear forwards; pointer-events: auto; cursor: pointer; transition: 0.2s; white-space: nowrap; }
-        .ghost-entity:hover { transform: scale(1.2); color: #fff; }
-        @keyframes floatUp { 0% { transform: translateY(100vh); opacity: 0; } 20% { opacity: 0.8; } 80% { opacity: 0.8; } 100% { transform: translateY(-100px); opacity: 0; } }
-
-        /* Клеймо позора */
+        /* Клеймо позора (ФИКС: z-index выше чем у авы) */
         .tainted-overlay {
             position: absolute;
-            top: -5%; left: -5%; width: 110%; height: 110%;
+            top: 0; left: 0; width: 100%; height: 100%;
             background-image: url('Avatars/glitch.jpg');
             background-size: cover;
             mix-blend-mode: screen;
             pointer-events: none;
-            z-index: 100;
+            z-index: 10 !important; /* Внутри контейнера авы, но над самой картинкой */
             display: block;
+            border-radius: 8px;
         }
+
+        /* ПРИЗРАКИ (Опускаем z-index) */
+        #ghostContainer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 50; } /* Ниже чем меню */
+        .ghost-entity { position: absolute; color: #aaa; font-size: 10px; padding: 5px; opacity: 0; text-shadow: 0 0 5px rgba(0, 0, 0, 0.8); animation: floatUp 8s linear forwards; pointer-events: auto; cursor: pointer; transition: 0.2s; white-space: nowrap; }
+        .ghost-entity:hover { transform: scale(1.2); color: #fff; }
+        @keyframes floatUp { 0% { transform: translateY(100vh); opacity: 0; } 20% { opacity: 0.8; } 80% { opacity: 0.8; } 100% { transform: translateY(-100px); opacity: 0; } }
+
+        /* --- НОВОЕ: ШКАЛА ЭВОЛЮЦИИ --- */
+        .evo-container { margin: 0 auto 20px auto; width: 90%; flex-shrink: 0; position: relative; z-index: 5;}
+        .evo-title { font-size: 8px; color: #aaa; margin-bottom: 12px; text-align: center; letter-spacing: 1px;}
+        .evo-bar-bg { position: relative; height: 4px; background: #333; border-radius: 2px; margin: 15px 10px 5px 10px; }
+        .evo-bar-fill { position: absolute; top: 0; left: 0; height: 100%; background: #ff3333; width: 0%; transition: width 0.5s ease-in-out; box-shadow: 0 0 10px #ff3333; border-radius: 2px;}
+        .evo-step { position: absolute; top: -10px; width: 24px; height: 24px; background: #111; border: 2px solid #555; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; transform: translateX(-50%); z-index: 2; transition: 0.3s; color: #555;}
+        .evo-step.unlocked { border-color: #ff3333; background: #2a0000; color: #fff; box-shadow: 0 0 8px rgba(255, 51, 51, 0.5); }
+        .evo-step.locked { opacity: 0.5; filter: grayscale(100%); }
+        .step-0 { left: 0%; } .step-7 { left: 35%; } .step-30 { left: 100%; }
+        .evo-labels { display: flex; justify-content: space-between; font-size: 6px; color: #666; margin-top: 14px; padding: 0 5px; text-transform: uppercase;}
     </style>
 </head>
 <body id="gameBody" class="bg-default">
@@ -270,7 +223,8 @@ font-weight: normal;
                     1. YOU HAVE <span>24 HOURS</span>.<br><br>
                     2. CLICK <span>"I AM ALIVE"</span> EVERY DAY.<br><br>
                     3. IF TIME RUNS OUT, YOUR <span>STREAK DIES</span>.<br><br>
-                    4. SURVIVE AT ALL COSTS.
+                    4. SURVIVE AT ALL COSTS.<br><br>
+                    5. <span id="ob-rule-5"></span>
                 </div>
                 <button class="action-btn buy" onclick="finishOnboarding()" style="background-color: #8b0000; color: #fff; border-color: #ff3333; font-weight: bold;" id="ob-btn-accept">[ ACCEPT PACT ]</button>
             </div>
@@ -302,8 +256,27 @@ font-weight: normal;
             
             <div class="scrollable-content">
                 <div class="avatar-box" id="avatarPreview"></div>
+                
+                <div class="evo-container">
+                    <div class="evo-title">EVOLUTION PROGRESS</div>
+                    <div class="evo-bar-bg">
+                        <div class="evo-bar-fill" id="evoFill"></div>
+                        <div class="evo-step step-0 unlocked">👤</div>
+                        <div class="evo-step step-7 locked" id="evoStep7">🔒</div>
+                        <div class="evo-step step-30 locked" id="evoStep30">🔒</div>
+                    </div>
+                    <div class="evo-labels">
+                        <span>BASE (0D)</span>
+                        <span>🔥LVL 2 (7D)</span>
+                        <span>💀MAX (30D)</span>
+                    </div>
+                </div>
+
                 <input type="text" id="nicknameInput" class="retro-input" placeholder="ENTER NAME" maxlength="10">
-                <div style="font-size: 8px; color: #aaa; margin: 10px 0 5px 0; text-align: left; flex-shrink: 0;">IDENTITY (АВАТАРЫ):</div>
+                <div style="font-size: 8px; color: #aaa; margin: 10px 0 5px 0; display: flex; justify-content: space-between; align-items: flex-end; flex-shrink: 0;">
+                    <span>IDENTITY (АВАТАРЫ):</span>
+                    <span style="color: #ff3333; font-size: 6px; text-align: right;">НАЖМИ НА ВЫБРАННУЮ<br>ДЛЯ СМЕНЫ СТИЛЯ 🔄</span>
+                </div>
                 <div class="avatar-selector" id="avatarSelectorContainer"></div>
                 <button class="action-btn buy" onclick="saveProfile()" style="margin-bottom: 15px;">SAVE DATA</button>
                 <div style="border-top: 1px dashed #333; padding-top: 15px; margin-top: 5px; flex-shrink: 0;">
@@ -473,13 +446,13 @@ font-weight: normal;
                 document.getElementById("ob-title-welcome").innerText = "ВРЕМЯ ИСТЕКАЕТ";
                 document.getElementById("ob-text-welcome").innerText = "DEADLINE — ЭТО ЖЕСТКИЙ ТЕСТ ТВОЕЙ ДИСЦИПЛИНЫ. ДОКАЖИ, ЧТО МОЖЕШЬ КОНТРОЛИРОВАТЬ СЕБЯ.";
                 document.getElementById("ob-title-rules").innerText = "ПРАВИЛА ИГРЫ";
-                document.getElementById("ob-text-rules").innerHTML = "1. ТАЙМЕР ДАЕТ ТЕБЕ РОВНО <span>24 ЧАСА</span>.<br><br>2. ДОКАЖИ СВОЙ ФОКУС: ЖМИ <span>'I AM ALIVE'</span> КАЖДЫЙ ДЕНЬ.<br><br>3. ПРОПУСТИШЬ ДЕДЛАЙН = <span>ПОЛНОЕ ОБНУЛЕНИЕ</span>.<br><br>4. СТАБИЛЬНОСТЬ — ТВОЕ ЕДИНСТВЕННОЕ ОРУЖИЕ.";
+                document.getElementById("ob-text-rules").innerHTML = "1. ТАЙМЕР ДАЕТ ТЕБЕ РОВНО <span>24 ЧАСА</span>.<br><br>2. ЖМИ <span>'I AM ALIVE'</span> КАЖДЫЙ ДЕНЬ.<br><br>3. ПРОПУСТИШЬ ДЕДЛАЙН = <span>ПОЛНОЕ ОБНУЛЕНИЕ</span>.<br><br>4. ТВОЕ ЕДИНСТВЕННОЕ ОРУЖИЕ.<br><br>5. <span>ЭВОЛЮЦИЯ:</span> АВАТАР МЕНЯЕТСЯ НА 7 И 30 ДЕНЬ.";
                 document.getElementById("ob-btn-accept").innerText = "[ ПРИНЯТЬ ВЫЗОВ ]";
             } else {
                 document.getElementById("ob-title-welcome").innerText = "TIME IS RUNNING OUT";
                 document.getElementById("ob-text-welcome").innerText = "DEADLINE IS A STRICT TEST OF YOUR DISCIPLINE. PROVE YOU CAN CONTROL YOURSELF.";
                 document.getElementById("ob-title-rules").innerText = "THE RULES";
-                document.getElementById("ob-text-rules").innerHTML = "1. THE CLOCK GIVES YOU EXACTLY <span>24 HOURS</span>.<br><br>2. PROVE YOUR FOCUS: CLICK <span>'I AM ALIVE'</span> EVERY DAY.<br><br>3. MISS THE DEADLINE = <span>TOTAL RESET</span>.<br><br>4. CONSISTENCY IS YOUR ONLY WEAPON.";
+                document.getElementById("ob-text-rules").innerHTML = "1. THE CLOCK GIVES YOU EXACTLY <span>24 HOURS</span>.<br><br>2. CLICK <span>'I AM ALIVE'</span> EVERY DAY.<br><br>3. MISS THE DEADLINE = <span>TOTAL RESET</span>.<br><br>4. CONSISTENCY IS YOUR ONLY WEAPON.<br><br>5. <span>EVOLUTION:</span> AVATAR CHANGES AT DAY 7 AND 30.";
                 document.getElementById("ob-btn-accept").innerText = "[ ACCEPT THE CHALLENGE ]";
             }
             document.getElementById("ob-step-1").style.display = "none";
@@ -586,55 +559,146 @@ font-weight: normal;
             "error.gif":   { 7: "error_7.gif",   30: "error_30.gif" }
         };
 
-        // Функция определяет, какой файл показать, исходя из текущего стрика
+        // --- ОБНОВЛЕНО: Функция определяет файл с учетом ручного выбора стиля ---
         function getEvolvedAvatar(baseName, currentStreak) {
-            // Если для этого аватара нет эволюций в базе, возвращаем базу
             if (!evolutions[baseName]) return baseName; 
-            
             let evo = evolutions[baseName];
             
-            // Проверяем приоритет с самой старшей стадии
-            if (currentStreak >= 30 && evo[30]) return evo[30]; // 30+ дней
-            if (currentStreak >= 7 && evo[7]) return evo[7];   // 7-29 дней
+            // Определяем максимально доступный уровень для текущего стрика игрока
+            let maxAllowed = 0;
+            if (currentStreak >= 30 && evo[30]) maxAllowed = 30;
+            else if (currentStreak >= 7 && evo[7]) maxAllowed = 7;
             
-            return baseName; // Стрик меньше 7 - отдаем базу
+            // Проверяем, есть ли ручной выбор стиля у игрока для этой аватарки
+            let pref = localStorage.getItem("evoPref_" + baseName);
+            let targetLevel = maxAllowed; // По умолчанию показываем максимум из доступного
+            
+            if (pref !== null) {
+                let parsedPref = parseInt(pref);
+                // Разрешаем применить стиль ТОЛЬКО если стрик все еще позволяет
+                if (parsedPref <= maxAllowed) {
+                    targetLevel = parsedPref; 
+                }
+            }
+            
+            if (targetLevel === 30) return evo[30];
+            if (targetLevel === 7) return evo[7];
+            return baseName; 
         }
 
-        // Улучшенное обновление UI с учетом эволюции и умной защитой
+        // --- НОВАЯ ФУНКЦИЯ ШКАЛЫ ЭВОЛЮЦИИ ---
+        function updateEvoBar() {
+            let fill = document.getElementById("evoFill");
+            let s7 = document.getElementById("evoStep7");
+            let s30 = document.getElementById("evoStep30");
+            
+            if (!fill) return;
+
+            // Расчет полоски (7 дней - 35%, 30 дней - 100%)
+            let percent = 0;
+            if (streak >= 30) percent = 100;
+            else if (streak >= 7) percent = 35 + ((streak - 7) / 23) * 65; 
+            else percent = (streak / 7) * 35;
+
+            fill.style.width = percent + "%";
+
+            // Открываем замочки
+            if (streak >= 7) { s7.className = "evo-step step-7 unlocked"; s7.innerText = "🔥"; } 
+            else { s7.className = "evo-step step-7 locked"; s7.innerText = "🔒"; }
+
+            if (streak >= 30) { s30.className = "evo-step step-30 unlocked"; s30.innerText = "💀"; } 
+            else { s30.className = "evo-step step-30 locked"; s30.innerText = "🔒"; }
+        }
+
+        // --- УЛУЧШЕННОЕ ОБНОВЛЕНИЕ UI С УЧЕТОМ КЛЕЙМА И ШКАЛЫ ---
         function updateAvatarUI() {
-            // Получаем имя файла с учетом эволюции
             let finalAvatarFilename = getEvolvedAvatar(currentAvatar, streak);
             
-            // Защита 'Умный Фаллбэк':
-            // src указывает на эволюционировавший файл (например, cat_7.png).
-            // onerror сработает, ЕГО НЕТ в папке. Тогда src мгновенно заменится на БАЗОВЫЙ аватар (cat.png).
-            // Если нет и базового - покажется силуэт 👤.
-            let imgTag = `<img src="Avatars/${finalAvatarFilename}" onerror="this.onerror=null; this.src='Avatars/${currentAvatar}'; this.style.border='none'; this.style.display='flex'; this.style.alignItems='center'; this.style.justifyContent='center'; this.style.color='#777'; this.style.fontSize='1.2rem'; this.innerHTML='👤';" style="width:100%; height:100%; object-fit:cover;">`;
+            // Генерируем чистый тег картинки
+            let imgHtml = `<img src="Avatars/${finalAvatarFilename}" onerror="this.onerror=null; this.src='Avatars/${currentAvatar}'; this.style.border='none'; this.innerHTML='👤';" style="width:100%; height:100%; object-fit:cover; position:relative; z-index:1;">`;
             
-            document.getElementById("myLbAvatar").innerHTML = imgTag;
-            document.getElementById("avatarPreview").innerHTML = imgTag;
+            // Вставляем картинку
+            document.getElementById("myLbAvatar").innerHTML = imgHtml;
+            document.getElementById("avatarPreview").innerHTML = imgHtml;
+
+            // СРАЗУ ЖЕ НАКЛАДЫВАЕМ КЛЕЙМО (если оно есть), чтобы оно не моргало
+            applyTaintEffect();
+            
+            // ОБНОВЛЯЕМ ШКАЛУ ПРОГРЕССА В ДОСЬЕ
+            updateEvoBar();
         }
         
+        // --- ОБНОВЛЕННАЯ СИСТЕМА МАГАЗИНА С ЭВОЛЮЦИЕЙ ПРЕВЬЮ ---
+        // --- ОБНОВЛЕНО: Инвентарь с логикой цикличной смены скинов ---
         function renderAvatarSelector() {
             let container = document.getElementById("avatarSelectorContainer");
+            if (!container) return;
             container.innerHTML = "";
             
             availableAvatars.forEach(av => {
                 let isUnlocked = av.isFree || unlockedAvatars.includes(av.filename);
                 let isSelected = currentAvatar === av.filename;
                 
+                // Какую картинку показать в ДОСЬЕ (учитывает ручной выбор стиля)
+                let fileToShow = getEvolvedAvatar(av.filename, streak);
+
                 let div = document.createElement("div");
                 div.className = `avatar-option ${isUnlocked ? 'unlocked' : 'locked'} ${isSelected ? 'selected' : ''}`;
-                div.innerHTML = `<img src="Avatars/${av.filename}" onerror="this.onerror=null; this.outerHTML='👤';" style="width:100%; height:100%; object-fit:cover;">`;
+                
+                // Если у аватарки есть эволюции и стрик >= 7, вешаем значок цикла
+                let cycleHint = "";
+                let hasEvo = evolutions[av.filename];
+                let maxAllowed = 0;
+                if (hasEvo) {
+                    if (streak >= 30 && hasEvo[30]) maxAllowed = 30;
+                    else if (streak >= 7 && hasEvo[7]) maxAllowed = 7;
+                }
+                
+                if (isSelected && maxAllowed > 0) {
+                    cycleHint = `<div style="position: absolute; top: 2px; right: 2px; font-size: 8px; z-index: 5; text-shadow: 1px 1px 2px #000;">🔄</div>`;
+                }
+
+                div.innerHTML = `<img src="Avatars/${fileToShow}" onerror="this.onerror=null; this.src='Avatars/${av.filename}'; this.innerHTML='👤';" style="width:100%; height:100%; object-fit:cover; position:relative; z-index:1;">${cycleHint}`;
                 
                 div.onclick = () => {
                     if (isUnlocked) {
-                        currentAvatar = av.filename;
-                        localStorage.setItem("playerAvatar", currentAvatar);
-                        updateAvatarUI(); renderAvatarSelector(); 
+                        if (isSelected && maxAllowed > 0) {
+                            // ЛОГИКА ЦИКЛА СТИЛЕЙ: Максимум -> База -> 7 Дней -> Максимум
+                            let currentPref = localStorage.getItem("evoPref_" + av.filename);
+                            let currentLvl = maxAllowed;
+                            if (currentPref !== null) {
+                                currentLvl = parseInt(currentPref);
+                                if (currentLvl > maxAllowed) currentLvl = maxAllowed;
+                            }
+                            
+                            let nextLvl = 0;
+                            if (maxAllowed === 7) {
+                                nextLvl = (currentLvl === 7) ? 0 : 7;
+                            } else if (maxAllowed === 30) {
+                                if (currentLvl === 30) nextLvl = 0;
+                                else if (currentLvl === 0) nextLvl = 7;
+                                else if (currentLvl === 7) nextLvl = 30;
+                            }
+                            
+                            localStorage.setItem("evoPref_" + av.filename, nextLvl);
+                        } else {
+                            // Обычный выбор другой аватарки
+                            currentAvatar = av.filename; 
+                            localStorage.setItem("playerAvatar", currentAvatar);
+                        }
+                        
+                        updateAvatarUI(); 
+                        renderAvatarSelector(); 
                     } else {
+                        // Покупка (показываем актуальную эволюцию для демо)
+                        let demoFile = av.filename;
+                        if (hasEvo) {
+                            if (streak >= 30 && hasEvo[30]) demoFile = hasEvo[30];
+                            else if (streak >= 7 && hasEvo[7]) demoFile = hasEvo[7];
+                        }
+
                         pendingPurchaseAvatar = av.filename; pendingPurchasePrice = av.price; pendingPurchaseName = av.name;
-                        document.getElementById("purchaseAvatarIcon").src = `Avatars/${av.filename}`;
+                        document.getElementById("purchaseAvatarIcon").src = `Avatars/${demoFile}`;
                         document.getElementById("purchaseAvatarName").innerText = av.name;
                         document.getElementById("purchaseAvatarPrice").innerText = av.price.toFixed(2);
                         document.getElementById("purchaseAvatarModal").style.display = "flex";
@@ -882,22 +946,24 @@ font-weight: normal;
                 document.querySelectorAll('.tainted-overlay').forEach(el => el.remove());
                 if(tracker) tracker.style.display = "none";
             } else {
-                // Обновляем трекер
-                if(tracker) {
-                    tracker.style.display = "block";
-                    daysLeftSpan.innerText = daysLeft;
-                }
+                if(tracker) { tracker.style.display = "block"; daysLeftSpan.innerText = daysLeft; }
 
+                // Накладываем только на главные аватарки
                 const targets = [
                     document.getElementById("avatarPreview"), 
                     document.getElementById("myLbAvatar")
                 ];
                 
                 targets.forEach(el => {
-                    if (el && !el.querySelector('.tainted-overlay')) {
+                    if (el) {
+                        // Удаляем старое клеймо, если оно есть внутри
+                        const oldOverlay = el.querySelector('.tainted-overlay');
+                        if(oldOverlay) oldOverlay.remove();
+
+                        // Создаем и добавляем новое клеймо
                         const overlay = document.createElement('div');
                         overlay.className = 'tainted-overlay';
-                        el.appendChild(overlay);
+                        el.appendChild(overlay); // position:absolute прижмет его к краям parent
                     }
                 });
             }
