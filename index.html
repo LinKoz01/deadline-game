@@ -77,19 +77,13 @@ font-weight: normal;
         .menu-btn { background: none; border: none; color: #aaa; font-size: 10px; text-decoration: underline; cursor: pointer; text-shadow: 1px 1px 2px #000; }
         .menu-btn:hover { color: #fff; }
 
-        /* --- ОБНОВЛЕННЫЕ ОКНА И СЛОИ (Z-INDEX) --- */
-        .modal-overlay { 
-            display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
-            background-color: rgba(0, 0, 0, 0.95); 
-            z-index: 2000 !important; /* Очень высоко, чтобы быть над призраками */
-            flex-direction: column; align-items: center; justify-content: center; 
-        }
+        /* Окна (ОБНОВЛЕННЫЕ СЛОИ) */
+        .modal-overlay { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.95); z-index: 2000 !important; flex-direction: column; align-items: center; justify-content: center; }
         
         .modal-window { 
             background-color: #111; border: 4px solid #4a0000; width: 90%; max-width: 380px; padding: 15px; 
             box-shadow: 0 0 20px rgba(255, 0, 0, 0.2);
-            max-height: 85vh; display: flex; flex-direction: column;
-            position: relative; z-index: 2001;
+            max-height: 85vh; display: flex; flex-direction: column; position: relative; z-index: 2001;
         }
         
         .modal-title { color: #ff3333; font-size: 14px; margin-bottom: 15px; text-shadow: 2px 2px #000; flex-shrink: 0; }
@@ -129,9 +123,71 @@ font-weight: normal;
         
         /* КОНТЕЙНЕРЫ ДЛЯ АВАТАРОВ */
         .lb-avatar { width: 24px; height: 24px; background-color: #000; border: 1px solid #555; display: flex; align-items: center; justify-content: center; margin-right: 15px; flex-shrink: 0; position: relative; font-size: 12px; z-index: 1; }
-        .avatar-box { width: 64px; height: 64px; background-color: #222; border: 2px solid #555; margin: 30px auto 10px auto; display: flex; align-items: center; justify-content: center; position: relative; font-size: 32px; flex-shrink: 0; z-index: 1; overflow: hidden; border-radius: 8px;}
+        .avatar-box { width: 64px; height: 64px; background-color: #222; border: 2px solid #555; margin: 30px auto 10px auto; display: flex; align-items: center; justify-content: center; position: relative; font-size: 32px; flex-shrink: 0; z-index: 1; overflow: hidden; border-radius: 8px; }
         
-        /* Клеймо позора (ФИКС: z-index выше чем у авы) */
+        /* ----- НАСТОЯЩАЯ VIP PNG-РАМКА ----- */
+        .lb-row.vip-row .lb-avatar { border: none !important; }
+        .lb-row.vip-row .lb-avatar::after {
+            content: ''; position: absolute; top: -20%; left: -20%; width: 140%; height: 140%;
+            background: url('Avatars/vip-frame.png') no-repeat center center; background-size: contain; z-index: 10; pointer-events: none;
+        }
+
+        body.is-vip .avatar-box { border: none !important; }
+        body.is-vip .avatar-box::after {
+            content: ''; position: absolute; top: -20%; left: -20%; width: 140%; height: 140%;
+            background: url('Avatars/vip-frame.png') no-repeat center center; background-size: contain; z-index: 100 !important; pointer-events: none;
+        }
+
+        /* --- ВЕРНУЛИ ГОРИЗОНТАЛЬНЫЙ СПИСОК И РАЗМЕРЫ АВАТАРОК --- */
+        .avatar-selector { display: flex; gap: 10px; overflow-x: auto; padding: 10px 5px; margin-bottom: 15px; border: 1px solid #333; background: #050505; flex-shrink: 0; }
+        .avatar-selector::-webkit-scrollbar { height: 4px; } .avatar-selector::-webkit-scrollbar-thumb { background: #ff3333; }
+        .avatar-option { width: 45px; height: 45px; flex-shrink: 0; background: #1a1a1a; border: 2px solid #333; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; position: relative; overflow: hidden; font-size: 20px;}
+        .avatar-option.unlocked:hover { border-color: #666; }
+        .avatar-option.selected { border-color: #ff3333; background: #2a0000; box-shadow: 0 0 10px rgba(255,51,51,0.5); }
+        .avatar-option.locked img { opacity: 0.3; filter: grayscale(100%); }
+        .avatar-option.locked::after { content: '🔒'; position: absolute; font-size: 10px; bottom: 2px; right: 2px; z-index: 2; }
+
+        /* --- ВЕРНУЛИ ШРИФТЫ И ТЕМЫ СТРОК --- */
+        .lb-info { flex-grow: 1; display: flex; flex-direction: column; gap: 5px; overflow: hidden; }
+        .lb-name { font-size: 10px; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .lb-streak { font-size: 8px; color: #ff3333; }
+
+        .lb-row.theme-academia { border-color: #8b0000; background: linear-gradient(90deg, #2a0808, #111); } .lb-row.theme-academia .lb-name::before { content: '📚 '; }
+        .lb-row.theme-library { border-color: #4a4a6a; background: linear-gradient(90deg, #1a1a25, #111); } .lb-row.theme-library .lb-name::before { content: '🕯️ '; }
+        .lb-row.theme-crypt { border-color: #4a5a4a; background: linear-gradient(90deg, #151a15, #111); border-style: dashed; } .lb-row.theme-crypt .lb-name::before { content: '💀 '; } .lb-row.theme-crypt .lb-name { color: #ccffcc; text-shadow: 0 0 5px #00ff00; }
+        .lb-row.theme-stable { border-color: #b8860b; background: linear-gradient(90deg, #2a1505, #111); } .lb-row.theme-stable .lb-name::before { content: '👑 '; } .lb-row.theme-stable .lb-name { color: #ffd700; }
+        .lb-row.theme-abyss { border-color: #00ff00; background: linear-gradient(90deg, #001a00, #111); } .lb-row.theme-abyss .lb-name::before { content: '/>_ '; color: #00ff00;} .lb-row.theme-abyss .lb-name { color: #00ff00; text-shadow: 0 0 8px #00ff00; }
+        .lb-row.theme-neon { border-color: #ff00ff; background: linear-gradient(90deg, #1a052a, #111); } .lb-row.theme-neon .lb-name::before { content: '⚡ '; } .lb-row.theme-neon .lb-name { color: #ffb3ff; text-shadow: 0 0 8px #ff00ff; }
+        .lb-row.theme-glitch { border-color: #ffff00; background: linear-gradient(90deg, #1a1a00, #111); } .lb-row.theme-glitch .lb-name::before { content: '⚠ '; color: #ffff00; } .lb-row.theme-glitch .lb-name { text-shadow: -2px 0 red, 2px 0 blue; }
+        
+        .lb-row.dead-row { background-color: #0d0d0d; border-color: #222; opacity: 0.7; } .lb-row.dead-row .lb-avatar { border-style: dashed; color: #444; } .lb-row.dead-row .lb-name { color: #666; text-decoration: line-through; } .lb-row.dead-row .lb-streak { color: #444; }
+
+        /* --- ВЕРНУЛИ РАЗМЕРЫ КНОПОК И ПОЛЕЙ ВВОДА --- */
+        .retro-input { background-color: #000; color: #fff; font-size: 10px; border: 2px solid #4a0000; padding: 10px; width: 80%; text-align: center; margin: 0 auto 15px auto; display: block; outline: none; flex-shrink: 0; box-sizing: border-box; }
+        .retro-input:focus { border-color: #ff3333; }
+        
+        .market-item { background-color: #1a1a1a; border: 2px solid #333; padding: 10px; margin-bottom: 10px; text-align: left; flex-shrink: 0; }
+        .item-name { color: #fff; font-size: 10px; margin-bottom: 6px; line-height: 1.4; }
+        .item-desc { font-size: 6px; color: #888; margin-bottom: 10px; line-height: 1.4; }
+        
+        .action-btn { background-color: #fff; color: #000; font-size: 10px; border: 2px solid #aaa; padding: 10px; cursor: pointer; width: 100%; text-align: center; transition: 0.2s; flex-shrink: 0; }
+        .action-btn.buy:hover { background-color: #ff3333; color: #fff; border-color: #ff3333; }
+        .action-btn.equip { background-color: #333; color: #fff; border-color: #555; }
+        .action-btn.equip:hover { background-color: #555; }
+        .action-btn.equipped { background-color: #8b0000; color: #fff; border-color: #ff3333; cursor: default; }
+        
+        .close-modal { background: none; border: none; color: #666; font-size: 10px; margin-top: 10px; cursor: pointer; padding: 10px; flex-shrink: 0; }
+        .close-modal:hover { color: #fff; }
+        .recruit-list { text-align: left; font-size: 8px; color: #aaa; margin-bottom: 20px; line-height: 2; background: #111; padding: 10px; border: 1px dashed #444; }
+        .recruit-active { color: #00ff00; } .recruit-pending { color: #555; }
+
+        /* ПРИЗРАКИ (Опущены под меню) */
+        #ghostContainer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 50; }
+        .ghost-entity { position: absolute; color: #aaa; font-size: 10px; padding: 5px; opacity: 0; text-shadow: 0 0 5px rgba(0, 0, 0, 0.8); animation: floatUp 8s linear forwards; pointer-events: auto; cursor: pointer; transition: 0.2s; white-space: nowrap; }
+        .ghost-entity:hover { transform: scale(1.2); color: #fff; }
+        @keyframes floatUp { 0% { transform: translateY(100vh); opacity: 0; } 20% { opacity: 0.8; } 80% { opacity: 0.8; } 100% { transform: translateY(-100px); opacity: 0; } }
+
+        /* Клеймо позора (ФИКС СЛОЯ) */
         .tainted-overlay {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -139,16 +195,10 @@ font-weight: normal;
             background-size: cover;
             mix-blend-mode: screen;
             pointer-events: none;
-            z-index: 10 !important; /* Внутри контейнера авы, но над самой картинкой */
+            z-index: 10 !important;
             display: block;
             border-radius: 8px;
         }
-
-        /* ПРИЗРАКИ (Опускаем z-index) */
-        #ghostContainer { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 50; } /* Ниже чем меню */
-        .ghost-entity { position: absolute; color: #aaa; font-size: 10px; padding: 5px; opacity: 0; text-shadow: 0 0 5px rgba(0, 0, 0, 0.8); animation: floatUp 8s linear forwards; pointer-events: auto; cursor: pointer; transition: 0.2s; white-space: nowrap; }
-        .ghost-entity:hover { transform: scale(1.2); color: #fff; }
-        @keyframes floatUp { 0% { transform: translateY(100vh); opacity: 0; } 20% { opacity: 0.8; } 80% { opacity: 0.8; } 100% { transform: translateY(-100px); opacity: 0; } }
 
         /* --- НОВОЕ: ШКАЛА ЭВОЛЮЦИИ --- */
         .evo-container { margin: 0 auto 20px auto; width: 90%; flex-shrink: 0; position: relative; z-index: 5;}
