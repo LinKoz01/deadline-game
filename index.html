@@ -765,36 +765,45 @@
         }
 
         function applyTaintEffect() {
-    // Берем актуальный стрик из памяти прямо сейчас
+    const rawTainted = localStorage.getItem("taintedStreak");
     const currentStreak = parseInt(localStorage.getItem("playerStreak")) || 0;
-    const taintedStreak = localStorage.getItem("taintedStreak");
 
-    // Если метки нет — принудительно удаляем все оверлеи
-    if (taintedStreak === null) {
+    console.log("--- DEBUG START ---");
+    console.log("Current Streak:", currentStreak);
+    console.log("Tainted Streak:", rawTainted);
+
+    if (rawTainted === null) {
+        // Клейма нет в хранилище, удаляем визуально, если что-то осталось
         document.querySelectorAll('.tainted-overlay').forEach(el => el.remove());
+        console.log("Status: No taint found, cleaned up.");
         return;
     }
 
-    const tStreak = parseInt(taintedStreak);
-    
-    // Если срок еще не вышел (текущий < старт + 7)
-    if (currentStreak < tStreak + 7) {
+    const tStreak = parseInt(rawTainted);
+
+    if (currentStreak >= tStreak + 7) {
+        // Срок прошел
+        localStorage.removeItem("taintedStreak");
+        document.querySelectorAll('.tainted-overlay').forEach(el => el.remove());
+        console.log("Status: Deadline reached, taint removed.");
+    } else {
+        // Срок не прошел, добавляем
         const targets = [
             document.getElementById("avatarPreview"), 
             document.getElementById("myLbAvatar")
         ];
+        
         targets.forEach(el => {
             if (el && !el.querySelector('.tainted-overlay')) {
                 const overlay = document.createElement('div');
                 overlay.className = 'tainted-overlay';
                 el.appendChild(overlay);
+                console.log("Status: Added overlay to", el.id);
             }
         });
-    } else {
-        // Срок вышел (стрик >= старт + 7) — удаляем метку и ОВЕРЛЕИ
-        localStorage.removeItem("taintedStreak");
-        document.querySelectorAll('.tainted-overlay').forEach(el => el.remove());
+        console.log("Status: Taint still active.");
     }
+    console.log("--- DEBUG END ---");
 }
 applyTaintEffect();
 
