@@ -719,13 +719,10 @@ font-weight: normal;
         // --- ОБНОВЛЕНИЕ UI АВАТАРКИ ---
         function updateAvatarUI() {
             let finalAvatarFilename = getEvolvedAvatar(currentAvatar, streak);
-            let imgHtml = `<img src="Avatars/${finalAvatarFilename}" onerror="this.onerror=null; this.src='Avatars/${currentAvatar}';" style="width:100%; height:100%; object-fit:cover; position:relative; z-index:1; border-radius: inherit;">`;
+            let imgHtml = `<img src="Avatars/${finalAvatarFilename}" onerror="this.onerror=null; this.src='Avatars/${currentAvatar}'; this.style.border='none'; this.innerHTML='👤';" style="width:100%; height:100%; object-fit:cover; position:relative; z-index:1; border-radius: inherit;">`;
             
-            let lbAvatar = document.getElementById("myLbAvatar");
-            let previewAvatar = document.getElementById("avatarPreview");
-            
-            if (lbAvatar) lbAvatar.innerHTML = imgHtml;
-            if (previewAvatar) previewAvatar.innerHTML = imgHtml;
+            document.getElementById("myLbAvatar").innerHTML = imgHtml;
+            document.getElementById("avatarPreview").innerHTML = imgHtml;
 
             applyTaintEffect();
             updateEvoBar();
@@ -1108,27 +1105,24 @@ font-weight: normal;
             }
         }
 
-        // --- ФУНКЦИИ УПРАВЛЕНИЯ ИЗ ПАНЕЛИ БОГА (НА РУССКОМ) ---
+        // --- ФУНКЦИИ ИМИТАЦИИ УПРАВЛЕНИЯ СЕРВЕРОМ ИЗ ПАНЕЛИ БОГА ---
+        function addCheatStars() { alert("[ADMIN] Начислено +5000 Звезд (Визуальный баланс обновлен)."); }
+        // Добавляет реальный предмет локально
         function addCheatDefibs() {
-            defibrillators = 5; 
-            localStorage.setItem("defibCount", defibrillators);
-            document.getElementById("defibDisplay").innerText = defibrillators;
-            alert("[АДМИН] Выдано максимум: 5 дефибрилляторов!");
+            if (defibrillators < 5) {
+                defibrillators++;
+                localStorage.setItem("defibCount", defibrillators);
+                document.getElementById("defibDisplay").innerText = defibrillators;
+                alert("[ADMIN] Дефибриллятор успешно добавлен в твой инвентарь!");
+            } else { alert("[ADMIN] Инвентарь уже забит (5/5)."); }
         }
-
-        function adminGiftContent() { 
-            unlockedAvatars = availableAvatars.map(a => a.filename); 
-            localStorage.setItem("unlockedAvatars", JSON.stringify(unlockedAvatars)); 
-            renderAvatarSelector();
-            alert(`[СЕРВЕР] Весь магазин аватарок успешно разблокирован для твоего аккаунта.`); 
-        }
-
-        function adminFindPlayer() { let target = prompt("Введите Telegram ID или Никнейм игрока:"); if(target) alert(`[СЕРВЕР] Пользователь ${target} найден.\nРегистрация: 2026-04-01.\nДонат: 1200 ⭐️.\nСтрик: 14 дней.`); }
-        function adminKillPlayer() { let target = prompt("Кому принудительно обнулить стрик? Введите ID:"); if(target) alert(`[СЕРВЕР] Стрик пользователя ${target} безжалостно уничтожен. Статус: DEAD.`); }
-        function adminToggleTaint() { let target = prompt("Введите ID игрока для управления Клеймом:"); if(target) alert(`[СЕРВЕР] Статус Клейма Позора для ${target} изменен.`); }
-        function adminShadowban() { let target = prompt("Кому выдать Теневой Бан? Введите ID:"); if(target) alert(`[СЕРВЕР] Пользователь ${target} забанен. Он исключен из Глобального Рейтинга.`); }
-        function adminBroadcast() { let msg = prompt("Введите текст уведомления для ВСЕХ игроков:"); if(msg) alert(`[СЕРВЕР] Рассылка запущена! Сообщение отправлено во все чаты Телеграма.`); }
-        function adminToggleMaintenance() { alert("[СЕРВЕР] Режим глобальных техработ активирован. Все таймеры игроков на сервере успешно ЗАМОРОЖЕНЫ."); }
+        function adminFindPlayer() { let target = prompt("Введите Telegram ID или Никнейм игрока:"); if(target) alert(`[SERVER] Пользователь ${target} найден. Зарегистрирован: 2026-04-01. Донат: 1200 ⭐️. Стрик: 14 дней.`); }
+        function adminKillPlayer() { let target = prompt("Кому принудительно обнулить стрик? Введите ID:"); if(target) alert(`[SERVER] Стрик пользователя ${target} безжалостно уничтожен. Статус: DEAD.`); }
+        function adminToggleTaint() { let target = prompt("Введите ID игрока для управления Клеймом:"); if(target) alert(`[SERVER] Статус Клейма Позора для ${target} изменен.`); }
+        function adminShadowban() { let target = prompt("Кому выдать Теневой Бан? Введите ID:"); if(target) alert(`[SERVER] Пользователь ${target} забанен. Он исключен из Глобального Рейтинга.`); }
+        function adminGiftContent() { let target = prompt("Введите ID игрока, которому хотите подарить контент:"); if(target) alert(`[SERVER] Все платные аватарки и темы успешно разблокированы для аккаунта ${target}.`); }
+        function adminBroadcast() { let msg = prompt("Введите текст глобального Push-уведомления для ВСЕХ игроков:"); if(msg) alert(`[SERVER] Бродкаст запущен! Сообщение отправлено во все чаты.`); }
+        function adminToggleMaintenance() { alert("[SERVER] Режим глобальных техработ активирован. Все таймеры игроков на сервере успешно ЗАМОРОЖЕНЫ."); }
 
         function openMarket() { document.getElementById("marketModal").style.display = "flex"; } function closeMarket() { document.getElementById("marketModal").style.display = "none"; }
         function openProfile() { document.getElementById("profileModal").style.display = "flex"; } function closeProfile() { document.getElementById("profileModal").style.display = "none"; }
