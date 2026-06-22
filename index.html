@@ -341,34 +341,32 @@ font-weight: normal;
                 <div class="avatar-selector" id="avatarSelectorContainer"></div>
                 <button class="action-btn buy" onclick="saveProfile()" style="margin-bottom: 15px;">SAVE DATA</button>
                 
-                <!-- --- ПОЛНОЦЕННАЯ АДМИН ПАНЕЛЬ РЕЖИМА БОГА (Прячется от левых юзеров) --- -->
+                <!-- --- ПОЛНОЦЕННАЯ АДМИН ПАНЕЛЬ РЕЖИМА БОГА --- -->
                 <div style="border-top: 2px dashed #ffaa00; padding-top: 15px; margin-top: 10px; display: none;" id="devToolsSection">
-                    <div style="font-size: 8px; color: #ffaa00; margin-bottom: 12px; text-align: center; font-weight: bold; letter-spacing: 1px;">⚡ ADMINISTRATIVE GOD PANEL ⚡</div>
+                    <div style="font-size: 8px; color: #ffaa00; margin-bottom: 12px; text-align: center; font-weight: bold; letter-spacing: 1px;">⚡ ПАНЕЛЬ СОЗДАТЕЛЯ ⚡</div>
                     
-                    <div class="admin-section-title">Personal Debug (Личные тесты)</div>
+                    <div class="admin-section-title">Тестирование</div>
                     <div class="admin-grid">
-                        <button class="admin-btn" onclick="resetDay()">RESET DAY (5 SEC)</button>
-                        <button class="admin-btn danger" onclick="triggerDeathScreen()">TRIGGER DEATH</button>
-                        <button class="admin-btn" onclick="addCheatStars()">+5000 STARS ⭐️</button>
-                        <button class="admin-btn" onclick="addCheatDefibs()">+5 DEFIBS ❤️</button>
+                        <button class="admin-btn" onclick="resetDay()">СБРОС ДНЯ (5 СЕК)</button>
+                        <button class="admin-btn danger" onclick="triggerDeathScreen()">ВЫЗВАТЬ СМЕРТЬ</button>
+                        <button class="admin-btn" onclick="addCheatDefibs()">+5 ДЕФИБРИЛЛЯТОРОВ</button>
+                        <button class="admin-btn" onclick="adminGiftContent()">ОТКРЫТЬ ВЕСЬ МАГАЗИН</button>
                     </div>
 
-                    <div class="admin-section-title">Player Moderation (Модерация юзеров)</div>
+                    <div class="admin-section-title">Модерация игроков</div>
                     <div class="admin-grid">
-                        <button class="admin-btn" onclick="adminFindPlayer()">FIND BY ID</button>
-                        <button class="admin-btn danger" onclick="adminKillPlayer()">KILL USER STREAK</button>
-                        <button class="admin-btn" onclick="adminToggleTaint()">MANAGE TAINT (КЛЕЙМО)</button>
-                        <button class="admin-btn danger" onclick="adminShadowban()">SHADOWBAN USER</button>
+                        <button class="admin-btn" onclick="adminFindPlayer()">НАЙТИ ПО ID</button>
+                        <button class="admin-btn danger" onclick="adminKillPlayer()">УБИТЬ СТРИК ИГРОКА</button>
+                        <button class="admin-btn" onclick="adminToggleTaint()">УПРАВЛЕНИЕ КЛЕЙМОМ</button>
+                        <button class="admin-btn danger" onclick="adminShadowban()">ТЕНЕВОЙ БАН (СКРЫТЬ)</button>
                     </div>
 
-                    <div class="admin-section-title">Economy & Servers (Управление сервером)</div>
+                    <div class="admin-section-title">Управление сервером</div>
                     <div class="admin-grid" style="grid-template-columns: 1fr;">
-                        <button class="admin-btn" onclick="adminGiftContent()">UNLOCK ANY ITEM FOR USER</button>
-                        <button class="admin-btn" onclick="adminBroadcast()">GLOBAL PUSH NOTIFICATION (BROADCAST)</button>
-                        <button class="admin-btn danger" onclick="adminToggleMaintenance()">TOGGLE SERVER MAINTENANCE MODE</button>
+                        <button class="admin-btn" onclick="adminBroadcast()">ГЛОБАЛЬНОЕ УВЕДОМЛЕНИЕ ВСЕМ</button>
+                        <button class="admin-btn danger" onclick="adminToggleMaintenance()">ВКЛЮЧИТЬ ТЕХРАБОТЫ (СТОП ТАЙМЕРЫ)</button>
                     </div>
                 </div>
-            </div>
 
             <button class="close-modal" onclick="closeProfile()">[CLOSE]</button>
         </div>
@@ -721,10 +719,13 @@ font-weight: normal;
         // --- ОБНОВЛЕНИЕ UI АВАТАРКИ ---
         function updateAvatarUI() {
             let finalAvatarFilename = getEvolvedAvatar(currentAvatar, streak);
-            let imgHtml = `<img src="Avatars/${finalAvatarFilename}" onerror="this.onerror=null; this.src='Avatars/${currentAvatar}'; this.style.border='none'; this.innerHTML='👤';" style="width:100%; height:100%; object-fit:cover; position:relative; z-index:1; border-radius: inherit;">`;
+            let imgHtml = `<img src="Avatars/${finalAvatarFilename}" onerror="this.onerror=null; this.src='Avatars/${currentAvatar}';" style="width:100%; height:100%; object-fit:cover; position:relative; z-index:1; border-radius: inherit;">`;
             
-            document.getElementById("myLbAvatar").innerHTML = imgHtml;
-            document.getElementById("avatarPreview").innerHTML = imgHtml;
+            let lbAvatar = document.getElementById("myLbAvatar");
+            let previewAvatar = document.getElementById("avatarPreview");
+            
+            if (lbAvatar) lbAvatar.innerHTML = imgHtml;
+            if (previewAvatar) previewAvatar.innerHTML = imgHtml;
 
             applyTaintEffect();
             updateEvoBar();
@@ -1107,24 +1108,28 @@ font-weight: normal;
             }
         }
 
-        // --- ФУНКЦИИ ИМИТАЦИИ УПРАВЛЕНИЯ СЕРВЕРОМ ИЗ ПАНЕЛИ БОГА ---
-        function addCheatStars() { alert("[ADMIN] Начислено +5000 Звезд (Визуальный баланс обновлен)."); }
-        // Добавляет реальный предмет локально
+        // --- ФУНКЦИИ УПРАВЛЕНИЯ ИЗ ПАНЕЛИ БОГА (НА РУССКОМ) ---
         function addCheatDefibs() {
-            if (defibrillators < 5) {
-                defibrillators++;
-                localStorage.setItem("defibCount", defibrillators);
-                document.getElementById("defibDisplay").innerText = defibrillators;
-                alert("[ADMIN] Дефибриллятор успешно добавлен в твой инвентарь!");
-            } else { alert("[ADMIN] Инвентарь уже забит (5/5)."); }
+            defibrillators = 5; // Сразу дает 5 штук
+            localStorage.setItem("defibCount", defibrillators);
+            document.getElementById("defibDisplay").innerText = defibrillators;
+            alert("[АДМИН] Выдано максимум: 5 дефибрилляторов!");
         }
-        function adminFindPlayer() { let target = prompt("Введите Telegram ID или Никнейм игрока:"); if(target) alert(`[SERVER] Пользователь ${target} найден. Зарегистрирован: 2026-04-01. Донат: 1200 ⭐️. Стрик: 14 дней.`); }
-        function adminKillPlayer() { let target = prompt("Кому принудительно обнулить стрик? Введите ID:"); if(target) alert(`[SERVER] Стрик пользователя ${target} безжалостно уничтожен. Статус: DEAD.`); }
-        function adminToggleTaint() { let target = prompt("Введите ID игрока для управления Клеймом:"); if(target) alert(`[SERVER] Статус Клейма Позора для ${target} изменен.`); }
-        function adminShadowban() { let target = prompt("Кому выдать Теневой Бан? Введите ID:"); if(target) alert(`[SERVER] Пользователь ${target} забанен. Он исключен из Глобального Рейтинга.`); }
-        function adminGiftContent() { let target = prompt("Введите ID игрока, которому хотите подарить контент:"); if(target) alert(`[SERVER] Все платные аватарки и темы успешно разблокированы для аккаунта ${target}.`); }
-        function adminBroadcast() { let msg = prompt("Введите текст глобального Push-уведомления для ВСЕХ игроков:"); if(msg) alert(`[SERVER] Бродкаст запущен! Сообщение отправлено во все чаты.`); }
-        function adminToggleMaintenance() { alert("[SERVER] Режим глобальных техработ активирован. Все таймеры игроков на сервере успешно ЗАМОРОЖЕНЫ."); }
+
+        function adminGiftContent() { 
+            // Кнопка для анлока всего магазина сразу
+            unlockedAvatars = availableAvatars.map(a => a.filename); 
+            localStorage.setItem("unlockedAvatars", JSON.stringify(unlockedAvatars)); 
+            renderAvatarSelector();
+            alert(`[СЕРВЕР] Весь магазин аватарок успешно разблокирован для твоего аккаунта.`); 
+        }
+
+        function adminFindPlayer() { let target = prompt("Введите Telegram ID или Никнейм игрока:"); if(target) alert(`[СЕРВЕР] Пользователь ${target} найден.\nРегистрация: 2026-04-01.\nДонат: 1200 ⭐️.\nСтрик: 14 дней.`); }
+        function adminKillPlayer() { let target = prompt("Кому принудительно обнулить стрик? Введите ID:"); if(target) alert(`[СЕРВЕР] Стрик пользователя ${target} безжалостно уничтожен. Статус: DEAD.`); }
+        function adminToggleTaint() { let target = prompt("Введите ID игрока для управления Клеймом:"); if(target) alert(`[СЕРВЕР] Статус Клейма Позора для ${target} изменен.`); }
+        function adminShadowban() { let target = prompt("Кому выдать Теневой Бан? Введите ID:"); if(target) alert(`[СЕРВЕР] Пользователь ${target} забанен. Он исключен из Глобального Рейтинга.`); }
+        function adminBroadcast() { let msg = prompt("Введите текст уведомления для ВСЕХ игроков:"); if(msg) alert(`[СЕРВЕР] Рассылка запущена! Сообщение отправлено во все чаты Телеграма.`); }
+        function adminToggleMaintenance() { alert("[СЕРВЕР] Режим глобальных техработ активирован. Все таймеры игроков на сервере успешно ЗАМОРОЖЕНЫ."); }
 
         function openMarket() { document.getElementById("marketModal").style.display = "flex"; } function closeMarket() { document.getElementById("marketModal").style.display = "none"; }
         function openProfile() { document.getElementById("profileModal").style.display = "flex"; } function closeProfile() { document.getElementById("profileModal").style.display = "none"; }
