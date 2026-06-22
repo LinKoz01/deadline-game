@@ -1110,14 +1110,13 @@ font-weight: normal;
 
         // --- ФУНКЦИИ УПРАВЛЕНИЯ ИЗ ПАНЕЛИ БОГА (НА РУССКОМ) ---
         function addCheatDefibs() {
-            defibrillators = 5; // Сразу дает 5 штук
+            defibrillators = 5; 
             localStorage.setItem("defibCount", defibrillators);
             document.getElementById("defibDisplay").innerText = defibrillators;
             alert("[АДМИН] Выдано максимум: 5 дефибрилляторов!");
         }
 
         function adminGiftContent() { 
-            // Кнопка для анлока всего магазина сразу
             unlockedAvatars = availableAvatars.map(a => a.filename); 
             localStorage.setItem("unlockedAvatars", JSON.stringify(unlockedAvatars)); 
             renderAvatarSelector();
